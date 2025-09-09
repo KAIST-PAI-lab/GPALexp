@@ -21,5 +21,5 @@ TBD
 ```
 
 ## GPALexp Wiki
-We've provided explanatory materials in the github Wiki of this repository.
-Please refer to 
+We've provided explanatory materials in the github Wiki of this repository.  
+Please refer to this [Wiki page](https://github.com/KAIST-PAI-lab/GPALexp/wiki) for further details.
