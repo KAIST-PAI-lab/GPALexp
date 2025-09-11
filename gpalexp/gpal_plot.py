@@ -1,13 +1,12 @@
-#%%
 from typing import Optional, Tuple
 
 import matplotlib.cm as cm
 import matplotlib.pyplot as plt
 import numpy as np
 import numpy.typing as npt
-from matplotlib.ticker import MultipleLocator
 from mpl_toolkits.mplot3d.axes3d import Axes3D
 from sklearn.metrics import mean_squared_error
+from sklearn.gaussian_process import GaussianProcessRegressor
 
 ## This function plots a 2-dimensional uncertainty plot.
 ## This 'uncertainty plot' visualizes the experimental data as a scatterplot.
@@ -204,13 +203,13 @@ def plot_GPAL_compare_uncertainty(fig_size:Tuple[int, int],
     if fit_data_X.shape[0]!=obs_data_Y.shape[0]:
         raise ValueError(f"fit_data_X and obs_data_Y should have equal number of data, got {fit_data_X.shape[0]} and {obs_data_Y.shape[0]}.")
     if predict_candidates_X.shape[0]!=post_mean_previous.shape[0]:
-        raise ValueError(f"predict_candidates_X and post_mean_previous should have equal number of data, got {predict_candidates_X.shape[0]} and {post_mean.shape[0]}.")
+        raise ValueError(f"predict_candidates_X and post_mean_previous should have equal number of data, got {predict_candidates_X.shape[0]} and {post_mean_previous.shape[0]}.")
     if predict_candidates_X.shape[0]!=post_stdev_previous.shape[0]:
-        raise ValueError(f"predict_candidates_X and post_stdev_previous should have equal number of data, got {predict_candidates_X.shape[0]} and {post_stdev.shape[0]}.")
+        raise ValueError(f"predict_candidates_X and post_stdev_previous should have equal number of data, got {predict_candidates_X.shape[0]} and {post_stdev_previous.shape[0]}.")
     if predict_candidates_X.shape[0]!=post_mean_target.shape[0]:
-        raise ValueError(f"predict_candidates_X and post_mean_target should have equal number of data, got {predict_candidates_X.shape[0]} and {post_mean_after.shape[0]}.")
+        raise ValueError(f"predict_candidates_X and post_mean_target should have equal number of data, got {predict_candidates_X.shape[0]} and {post_mean_target.shape[0]}.")
     if predict_candidates_X.shape[0]!=post_stdev_target.shape[0]:
-        raise ValueError(f"predict_candidates_X and post_stdev_target should have equal number of data, got {predict_candidates_X.shape[0]} and {post_stdev_after.shape[0]}.")
+        raise ValueError(f"predict_candidates_X and post_stdev_target should have equal number of data, got {predict_candidates_X.shape[0]} and {post_stdev_target.shape[0]}.")
     if not isinstance(max_stdev_design, float):
         raise TypeError(f"max_stdev_design should be a float value, got the type of {type(max_stdev_design).__name__}.")
     if not isinstance(sigma_coef, float):
