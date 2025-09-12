@@ -79,7 +79,7 @@ kernel, gpr = GPRInstance(kernel_type, kernel_args, combine_format)
 ''' =================================== Step 1 ========================================='''
 
 num_trials=20           # Number of experiment trials for a single subject.
-num_DVs=1               # The number of design variables to be optimized.
+num_FS=1                # The number of feature stimulus (stimuli) to be optimized.
 
 ''' 
 Initializing a numpy array for recording. 
@@ -170,7 +170,7 @@ for trial_index in range(1, num_trials):
     
     ## Executing the gpal_optimize() function with appropriate input values.
     optimal_design, pMean, pStd, lml = gpal_optimize(gpr,                                   # A GP regressor object to be fitted.
-                                                     num_DVs,                             # Number of design variables to be optimized
+                                                     num_FS,                             # Number of design variables to be optimized
                                                      data_record[:trial_index],                            # The design variable data for fitting the GP regressor
                                                      stimuli   # Overall specifications on the design candidate values.
                                                     )                  
@@ -179,7 +179,7 @@ for trial_index in range(1, num_trials):
 
     # Show the dots and get response from participant
     # If size_control is enabled, adjust the dot size, else use default size
-    response = show_and_get_response(given_number, visuals, max_number=max_number, size_control=size_control_order[trial_idx])
+    response = show_and_get_response(given_number, visuals, max_number=max_number, size_control=size_control_order[trial_index])
 
     '''
     Recording the results for the next trial
@@ -200,7 +200,4 @@ results_df = pd.DataFrame(data_record, columns=['given_number', 'response'])
 results_df.to_csv(os.path.join(save_results_dir, f'results_trial_{num_trials}.csv'), index=False)
 
 ## Closing the psychopy experiment window.
-visuals['win'].close()  
-
-
-save_figures_dir='figures'
+visuals['win'].close() 

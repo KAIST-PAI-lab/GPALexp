@@ -4,11 +4,11 @@ def argparser():
     parser = argparse.ArgumentParser(description='Run the Number Line Estimation Experiment.')
     parser.add_argument('--num_trials', type=int, default=20, help='Number of trials in the experiment.')
     parser.add_argument('--seed', default=None, help='Random seed for reproducibility.')
-    parser.add_argument('--num_DVs', type=int, default=1, help='The number of design variables to be optimized.')
+    parser.add_argument('--num_FS', type=int, default=1, help='The number of features stimuli to be optimized.')
     
     ## Arguments related to gpr_instance.py
     parser.add_argument('--kernel_types', type=list, default=[0,6,8], help='The indices (or names) of the kernels to be combined.')
-    parser.add_argument('--kernel_arguments', type=list, default=[[1.0], [1.0], [0.05]], help='The values to be fed to create each kernel objects.')
+    parser.add_argument('--kernel_arguments', type=list, default=[[1.0], [1.0], [0.01]], help='The values to be fed to create each kernel objects.')
     parser.add_argument('--combine_format', type=str, default="k1*k2+k3", help='A string representing how the kernels should be combined.')
     parser.add_argument('--normalize_y', default=True, help='A binary mask indicating whether to normalize obs_data_Y while fitting.')
     parser.add_argument('--n_restarts_optimizer', default=0, help='The number of restarts of the optimizer to find the optimal kernel parameters.')
