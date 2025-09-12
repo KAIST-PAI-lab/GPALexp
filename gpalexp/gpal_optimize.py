@@ -4,7 +4,7 @@ from typing import Callable
 import numpy.typing as npt
 from typing import Optional
 import inspect
-from gpal.gpr_fit_predict import gpr_fit, gpr_predict, next_design
+from gpalexp.gpr_fit_predict import gpr_fit, gpr_predict, next_design
 
 
 

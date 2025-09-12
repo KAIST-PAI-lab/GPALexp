@@ -5,9 +5,8 @@ import os, random, warnings
 
 ## Importing key functions from our gpal package.
 ## These three functions must be utilized to conduct GPAL properly.
-from gpal.gpal_optimize import gpal_optimize
-from gpal.gpr_instance import GPRInstance
-from gpal.utils import argsConstructor, sequence_with_interval
+from gpalexp import GPRInstance, gpal_optimize, argsConstructor
+from gpalexp import sequence_with_interval
 
 ## Importing key functions from the psychopy package.
 ## Our number-line task file is implemented based on the psychopy package.
@@ -25,33 +24,6 @@ logging.console.setLevel(logging.ERROR)
 ## NOTE: The 'fullscreen mode' is turned off by default.
 ##       Users can turn on the fullscreen mode by setting fullscr=True.
 visuals = initialize_psychopy(fullscr=False)
-
-'''
-## Argument Specifications
-## To be specific, the following codes load default arguments specified in the configuration file 'config.yaml'.
-## If the users modify the default arguments, those values will directly be reflected in the above variables.
-
-## Arguments related to the experimental environment
-num_trials = 20                             
-seed = None                                 # A random seed value for reproducibility. 
-num_DVs = 1                                 
-## Arguments related to Gaussian process regressor initialization       
-normalize_y = True                         # A binary mask indicating whether to normalize the target values while fitting.
-n_restarts_optimizer = 50                 # The number of restarts of the optimizer to find the optimal kernel parameters.
-kernel_types = [0,6,8]                     # A list of indices of kernels to be combined. Refer to 'kernelTypeDic' above.
-kernel_arguments = [[1.0], [1.0], [0.01]]             # A list of list of arguments to be fed to each kernel.
-combine_format = "k1*k2+k3"                # A string indicating how the kernels should be combined.
-
-## Arguments related to optimizing the GPR instance.
-return_std = True                      # A binary mask indicating whether to return standard deviation of posterior distribution at each query value.
-return_cov = False                         # A binary mask indicating whether to return covaraince matrix of posterior distribution at each query value.
-
-## Arguments related to running an experiment.
-save_results_dir = 'results'             # A directory to store the task results as .csv files.
-save_models_dir = 'models'               # A directory to store the trained Gaussian process regressor models.
-save_figures_dir = 'figures'
-'''
-
 
 
 
@@ -75,8 +47,7 @@ Defining a Gaussian process regressor (GPR) object.
 ## NOTE: It is sufficient to write only the values we are putting to argsConsturctor(),
 ##       But for guidance, we've specified both the values that argsConstructor() should take
 ##       and those we've loaded and putting into the function. 
-kernel_type, kernel_args = argsConstructor([0,6,8], 
-                                           [[1.0], [1.0], [0.01]])
+kernel_type, kernel_args = argsConstructor([0,6,8], [[1.0], [1.0], [0.01]])
 
 
 '''
@@ -102,7 +73,8 @@ Initializing a kernel object and a GPR with the kernel.
 ## There are two outputs, which we've named kernel and gpr.
 ## kernel is a Gaussian process kernel object created following our specifications.
 ## gpr is a GPR object associated with that kernel object.
-kernel, gpr = GPRInstance(kernel_type, kernel_args, 'k1*k2+k3')
+combine_format = "k1*k2+k3"
+kernel, gpr = GPRInstance(kernel_type, kernel_args, combine_format)
 
 ''' =================================== Step 1 ========================================='''
 
@@ -156,8 +128,10 @@ Running the first trial.
 start_val=5
 end_val=500
 interval=5
-stimulus_list=sequence_with_interval(start_val, end_val, interval)
-initial_stimulus=np.random.choice(stimulus_list.squeeze())
+stimuli=sequence_with_interval(start_val, end_val, interval)
+
+trial_index=0
+initial_stimulus=np.random.choice(stimuli.squeeze())
 gp_mean = 0
 gp_std = 1
 lml = 0
@@ -176,8 +150,8 @@ Recording the results for the next trial
 '''
 ## The 0-th row records the selected value of the design variable, namely the 'given number' of the number-line task. 
 ## The 1-th row records the response of the subject for the given_number.
-data_record[0][0] = initial_stimulus
-data_record[0][1] = response
+data_record[trial_index,0] = initial_stimulus
+data_record[trial_index,1] = response
 
 ## Waiting for the user to press the space key, to move on to the next trial
 event.waitKeys(keyList=['space'])  
@@ -185,7 +159,7 @@ event.waitKeys(keyList=['space'])
 
 ''' Running experimental trials with GPAL. '''
 ## We will run the following block n_trials times, with trial_idx representing the index of the currently running trial.
-for trial_idx in range(1, num_trials):
+for trial_index in range(1, num_trials):
 
     ## This code block is executed otherwise (i.e. for the second to the last trial).
     ## gpal_optimize() function actually executes GPAL optimization
@@ -193,16 +167,14 @@ for trial_idx in range(1, num_trials):
     ## as well as some GPAL-related statistics.
     ## NOTE: The design variable to be optimized here is the 'given number' of the number-line task.
     
-
-    data_collected=data_record[:trial_idx]
     
     ## Executing the gpal_optimize() function with appropriate input values.
-    result, pMean, pStd, lml = gpal_optimize(gpr,                                   # A GP regressor object to be fitted.
-                                             num_DVs,                             # Number of design variables to be optimized
-                                             data_collected,                            # The design variable data for fitting the GP regressor
-                                             stimulus_list   # Overall specifications on the design candidate values.
-                                            )                  
-    given_number = int(result[0])                                                # Extracting the optimal 'given number' value for the next trial.
+    optimal_design, pMean, pStd, lml = gpal_optimize(gpr,                                   # A GP regressor object to be fitted.
+                                                     num_DVs,                             # Number of design variables to be optimized
+                                                     data_record[:trial_index],                            # The design variable data for fitting the GP regressor
+                                                     stimuli   # Overall specifications on the design candidate values.
+                                                    )                  
+    given_number = int(optimal_design)                                                # Extracting the optimal 'given number' value for the next trial.
 
 
     # Show the dots and get response from participant
@@ -214,8 +186,8 @@ for trial_idx in range(1, num_trials):
     '''
     ## The 0-th row records the selected value of the design variable, namely the 'given number' of the number-line task. 
     ## The 1-th row records the response of the subject for the given_number.
-    data_record[trial_idx, 0] = given_number
-    data_record[trial_idx, 1] = response
+    data_record[trial_index,0] = given_number
+    data_record[trial_index,1] = response
 
     ## Waiting for the user to press the space key, to move on to the next trial
     event.waitKeys(keyList=['space'])  
