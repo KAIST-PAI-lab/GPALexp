@@ -4,7 +4,7 @@ def argparser():
     parser = argparse.ArgumentParser(description='Run the Number Line Estimation Experiment.')
     parser.add_argument('--num_trials', type=int, default=20, help='Number of trials in the experiment.')
     parser.add_argument('--seed', default=None, help='Random seed for reproducibility.')
-    parser.add_argument('--num_FS', type=int, default=1, help='The number of features stimuli to be optimized.')
+    parser.add_argument('--num_features', type=int, default=1, help='The number of stimulus features to be optimized.')
     
     ## Arguments related to gpr_instance.py
     parser.add_argument('--kernel_types', type=list, default=[0,6,8], help='The indices (or names) of the kernels to be combined.')

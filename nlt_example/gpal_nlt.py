@@ -68,7 +68,7 @@ Initializing a kernel object and a GPR with the kernel.
 ## we can just feed "k1*k2+k3" as combine_format.
 
 ## For alpha, n_restarts_optimizer, normalize_y, and random_state, 
-## it is recommended to put the default values, loaded from config.yaml.
+## it is recommended to put the default values, which are automatically fed into.
 
 ## There are two outputs, which we've named kernel and gpr.
 ## kernel is a Gaussian process kernel object created following our specifications.
@@ -79,23 +79,23 @@ kernel, gpr = GPRInstance(kernel_type, kernel_args, combine_format)
 ''' =================================== Step 1 ========================================='''
 
 num_trials=20           # Number of experiment trials for a single subject.
-num_FS=1                # The number of feature stimulus (stimuli) to be optimized.
+num_features=1          # The number of stimulus feautres to be optimized.
 
 ''' 
 Initializing a numpy array for recording. 
 '''
 ## The number-line task of our interest is a 1-dimensional task,
 ## where the 'given number' may vary but 'upper bound' stays still.
-## In other words, we have a single design variable, which is the 'given number'.
+## In other words, we have a single stimulus feature, which is the 'given number'.
 ## We will create a numpy array for recording the experiment results.
 ## The first row will record the 'given number' for each trial,
 ## and the second row is for recording the subject's estimation on the 'given number'. 
 ## This record array will be updated after each trial.
-## NOTE: The number of columns of record_array is set to n_DVs+1. 
-##       Here n_DVs is the number of design variables to be optimized.
-##       This enables us to record multiple design variables and user responses, 
-#        in a single data structure, even for arbitrary number of design variables.
-##       The first n_DVs columns will record value of each design variables,
+## NOTE: The number of columns of record_array is set to num_features+1. 
+##       Here num_features is the number of stimulus features to be optimized.
+##       This enables us to record multiple stimulus features and user responses, 
+#        in a single data structure, even for arbitrary number of stimulus features.
+##       The first num_features columns will record value of each stimulus features,
 ##       and the last column will record the subject's responses.
 data_record = np.zeros((20, 2))   
 
@@ -121,7 +121,7 @@ size_control_order = random.sample(dot_size_flags, num_trials)
 Running the first trial.
 '''
 ## This code block is for running the first trial.
-## Since we cannot optimize the design variable (i.e. 'given number') in the first trial,
+## Since we cannot optimize the stimulus feature (i.e. 'given number') in the first trial,
 ## we just set it as a random number among (5, 10, 15, ... , 495, 500)
 ## pMean, pStd, lml are GPAL-related statistics, which cannot be calculated in the first trial.
 ## Therefore we've just initialized them with simple values.
@@ -148,7 +148,7 @@ response = show_and_get_response(initial_stimulus,
 '''
 Recording the results for the next trial
 '''
-## The 0-th row records the selected value of the design variable, namely the 'given number' of the number-line task. 
+## The 0-th row records the selected value of the stimulus feature, namely the 'given number' of the number-line task. 
 ## The 1-th row records the response of the subject for the given_number.
 data_record[trial_index,0] = initial_stimulus
 data_record[trial_index,1] = response
@@ -163,18 +163,18 @@ for trial_index in range(1, num_trials):
 
     ## This code block is executed otherwise (i.e. for the second to the last trial).
     ## gpal_optimize() function actually executes GPAL optimization
-    ## and yields an optimal design for the next trial
+    ## and yields an optimal feature for the next trial
     ## as well as some GPAL-related statistics.
-    ## NOTE: The design variable to be optimized here is the 'given number' of the number-line task.
+    ## NOTE: The stimulus feature to be optimized here is the 'given number' of the number-line task.
     
     
     ## Executing the gpal_optimize() function with appropriate input values.
-    optimal_design, pMean, pStd, lml = gpal_optimize(gpr,                                   # A GP regressor object to be fitted.
-                                                     num_FS,                             # Number of design variables to be optimized
-                                                     data_record[:trial_index],                            # The design variable data for fitting the GP regressor
-                                                     stimuli   # Overall specifications on the design candidate values.
+    optimal_design, pMean, pStd, lml = gpal_optimize(gpr,                                  # A GP regressor object to be fitted.
+                                                     num_features,                         # Number of feature stimulus to be optimized
+                                                     data_record[:trial_index],            # The feature stimulus data for fitting the GP regressor
+                                                     stimuli                               # Overall specifications on the design candidate values.
                                                     )                  
-    given_number = int(optimal_design)                                                # Extracting the optimal 'given number' value for the next trial.
+    given_number = int(optimal_design)                                                     # Extracting the optimal 'given number' value for the next trial.
 
 
     # Show the dots and get response from participant
@@ -184,7 +184,7 @@ for trial_index in range(1, num_trials):
     '''
     Recording the results for the next trial
     '''
-    ## The 0-th row records the selected value of the design variable, namely the 'given number' of the number-line task. 
+    ## The 0-th row records the selected value of the stimulus feature, namely the 'given number' of the number-line task. 
     ## The 1-th row records the response of the subject for the given_number.
     data_record[trial_index,0] = given_number
     data_record[trial_index,1] = response

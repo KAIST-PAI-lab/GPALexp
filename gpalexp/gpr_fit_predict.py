@@ -7,22 +7,22 @@ import numpy.typing as npt
 from gpalexp.utils import prediction
 
 def gpr_fit(gpr:GaussianProcessRegressor, 
-            num_FS: int, 
+            num_features: int, 
             data_record: npt.NDArray[np.floating]):
     if not isinstance(gpr, GaussianProcessRegressor):
         raise TypeError(f"gpr should be a GaussianProcessRegressor object, got the type of {type(gpr).__name__}.")
-    if not isinstance(num_FS, int):
-        raise TypeError(f"num_FS should be an integer value, got the type of {type(num_FS).__name__}.")
-    if num_FS<1:
-        raise ValueError(f"num_FS should be a positive integer, got {num_FS}.")
+    if not isinstance(num_features, int):
+        raise TypeError(f"num_features should be an integer value, got the type of {type(num_features).__name__}.")
+    if num_features<1:
+        raise ValueError(f"num_features should be a positive integer, got {num_features}.")
     if not isinstance(data_record, np.ndarray):
         raise TypeError(f"data_record should be a numpy array.")
     if data_record.dtype!=np.floating:
         raise TypeError(f"data_record should have the float dtype, got the dtype of {data_record.dtype}.")
     if data_record.ndim!=2:
         raise ValueError(f"data_record should be a 2D numpy array, got {data_record.ndim} dimensions.")
-    if data_record.shape[1]!=num_FS+1:
-         raise ValueError(f"data_record should be a 2D numpy array with {num_FS+1} columns, got {data_record.shape[1]} columns.")
+    if data_record.shape[1]!=num_features+1:
+         raise ValueError(f"data_record should be a 2D numpy array with {num_features+1} columns, got {data_record.shape[1]} columns.")
     
     fit_data_X=data_record[:, :-1]
     obs_data_Y=data_record[:, -1]
@@ -32,16 +32,16 @@ def gpr_fit(gpr:GaussianProcessRegressor,
 
 
 def gpr_predict(gpr:GaussianProcessRegressor, 
-                num_FS:int, 
+                num_features:int, 
                 predict_candidates_X: npt.NDArray[np.floating], 
                 return_stdev:bool=False, 
                 return_covar:bool=False):
     if not isinstance(gpr, GaussianProcessRegressor):
         raise TypeError(f"gpr should be a GaussianProcessRegressor object, got the type of {type(gpr).__name__}.")
-    if not isinstance(num_FS, int):
-        raise TypeError(f"num_FS should be an integer value, got the type of {type(num_FS).__name__}.")
-    if num_FS<1:
-        raise ValueError(f"num_FS should be a positive integer, got {num_FS}.")
+    if not isinstance(num_features, int):
+        raise TypeError(f"num_features should be an integer value, got the type of {type(num_features).__name__}.")
+    if num_features<1:
+        raise ValueError(f"num_features should be a positive integer, got {num_features}.")
     if return_stdev and return_covar:
         raise ValueError(f"At most one of return_stdev and return_covar can be True.")
     if not isinstance(predict_candidates_X, np.ndarray):
@@ -50,8 +50,8 @@ def gpr_predict(gpr:GaussianProcessRegressor,
         raise TypeError(f"predict_data_X should have the float dtype.")
     if predict_candidates_X.ndim!=2:
         raise ValueError(f"predict_data_X should be a 2D numpy array, got {predict_candidates_X.ndim} dimensions.")
-    if predict_candidates_X.shape[1]!=num_FS:
-         raise ValueError(f"predict_data_X should be a 2D numpy array with {num_FS} columns, got {predict_candidates_X.shape[1]} columns.")
+    if predict_candidates_X.shape[1]!=num_features:
+         raise ValueError(f"predict_data_X should be a 2D numpy array with {num_features} columns, got {predict_candidates_X.shape[1]} columns.")
     
     posterior_mean=None
     posterior_stdev: Optional[np.ndarray] = None
@@ -74,23 +74,23 @@ def gpr_predict(gpr:GaussianProcessRegressor,
 
 
 def next_design(posterior_prediction:prediction, 
-                num_FS: int, 
+                num_features: int, 
                 predict_candidates_X:npt.NDArray[np.floating]):
     
     if not isinstance(posterior_prediction, prediction):
         raise TypeError(f"posterior_prediction should be the value returned from gpr_predict() function.")
-    if not isinstance(num_FS, int):
-        raise TypeError(f"num_FS should be an integer value, got the type of {type(num_FS).__name__}.")
-    if num_FS<1:
-        raise ValueError(f"num_FS should be a positive integer, got {num_FS}.")
+    if not isinstance(num_features, int):
+        raise TypeError(f"num_features should be an integer value, got the type of {type(num_features).__name__}.")
+    if num_features<1:
+        raise ValueError(f"num_features should be a positive integer, got {num_features}.")
     if not isinstance(predict_candidates_X, np.ndarray):
         raise TypeError(f"predict_candidates_X should be a numpy array, got the type of {type(predict_candidates_X).__name__}.")
     if predict_candidates_X.dtype!=np.floating:
         raise TypeError(f"predict_candidates_X should have the float dtype.")
     if predict_candidates_X.ndim!=2:
         raise ValueError(f"predict_candidates_X should be a 2D array, got {predict_candidates_X.ndim} dimensions.")
-    if predict_candidates_X.shape[1]!=num_FS:
-        raise ValueError(f"predict_candidates_X should be a 2D numpy array with {num_FS} columns, got {predict_candidates_X.shape[1]} columns.")    
+    if predict_candidates_X.shape[1]!=num_features:
+        raise ValueError(f"predict_candidates_X should be a 2D numpy array with {num_features} columns, got {predict_candidates_X.shape[1]} columns.")    
     if posterior_prediction.mean is None:
         raise ValueError(f"The 'mean' field of posterior_predictions should not be None.")
     posterior_mean=posterior_prediction.mean
