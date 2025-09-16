@@ -386,6 +386,14 @@ def sequence_with_interval(start_val: int|float, end_val: int|float, interval:in
     return np.arange(start_val, end_val, interval, dtype=float).reshape(-1, 1)
 
 def grid_with_sequences(*sequences):
+    for seq in sequences:
+        if not isinstance(seq, np.ndarray):
+            raise TypeError(f"Every argument should be a numpy array, got the type of {type(seq).__name__}.")
+        if seq.ndim!=2:
+            raise ValueError(f"Every argument should be a 2D array, got the dimension of {seq.ndim}.")
+        if seq.shape[1]!=1:
+            raise ValueError(f"Every argument should have a single column, got {seq.shape[1]} columns.")
+            
     seq_2D= (lambda *args: np.concat(*args, axis=0))(*sequences)
     coords_per_axis=list(np.meshgrid(*seq_2D, indexing='ij'))
     coords_grid=np.stack(coords_per_axis, -1)
