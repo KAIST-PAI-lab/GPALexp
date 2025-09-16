@@ -196,6 +196,8 @@ for trial_index in range(1, num_trials):
 Saving experiment results in the .csv format
 '''
 save_results_dir='results'
+if not os.path.exists(save_results_dir):
+    os.mkdir(save_results_dir)
 results_df = pd.DataFrame(data_record, columns=['given_number', 'response'])
 results_df.to_csv(os.path.join(save_results_dir, f'results_trial_{num_trials}.csv'), index=False)
 
