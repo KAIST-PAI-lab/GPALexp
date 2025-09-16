@@ -1,0 +1,41 @@
+[project]
+name = "GPALexp"
+version = "0.1.2"
+authors = [
+    {name="Junyup Kim", email="ytrewq271828@alumni.kaist.ac.kr"},
+    {name="Chaeho Lee", email="ch.chell39@gmail.com"},
+    {name="Boyoung Kwon", email="bykwon@kaist.ac.kr"},
+    {name="Sangho Lee", email="sangholee@kaist.ac.kr"},
+]
+maintainers = [
+    {name="Junyup Kim", email="ytrewq271828@alumni.kaist.ac.kr"},
+    {name="Sangho Lee", email="sangholee@kaist.ac.kr"},
+]
+description = "A package for incorporating Gaussian Process Active Learning (GPAL) in psychology experiments."
+readme = "README.md"
+requires-python = "==3.10.*"
+classifiers = [
+    "Programming Language :: Python :: 3.10",
+    "Operating System :: Microsoft :: Windows :: Windows 11",
+    "Topic :: Software Development :: Version Control :: Git",
+    "Intended Audience :: Science/Research",
+    "Natural Language :: English",
+    "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+]
+dependencies = [
+    "numpy==2.2.6",
+    "matplotlib==3.10.3",
+    "pandas==2.3.1",
+    "scipy==1.15.3",
+    "scikit-learn==1.7.1",
+]
+license = "GPL-3.0-or-later"
+license-files = ["LICEN[CS]E*"]
+
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[project.urls]
+Homepage = "https://github.com/KAIST-PAI-lab/GPALexp"
+Issues = "https://github.com/KAIST-PAI-lab/GPALexp/issues"
