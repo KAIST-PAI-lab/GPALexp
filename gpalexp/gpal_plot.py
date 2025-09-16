@@ -9,36 +9,6 @@ from mpl_toolkits.mplot3d.axes3d import Axes3D
 from sklearn.metrics import mean_squared_error
 from sklearn.gaussian_process import GaussianProcessRegressor
 
-## This function plots a 2-dimensional uncertainty plot.
-## This 'uncertainty plot' visualizes the experimental data as a scatterplot.
-## Then it visualizes the posterior mean calculated for each design candidate,
-## and the uncertainty range determined by the associated posterior standard deviations.
-
-## Parameter Descriptions
-## fig_size: The size of the figure. Must be a tuple holding integer values.
-## fit_data_X: The numpy array recording the provided design variables for each given experimental trial. 
-## obs_data_Y: The numpy array recording the subject responses for each given experimental trial.
-## predict_candidates_X: The numpy array containing the design candidates for GPAL optimization.
-## post_mean: The numpy array holding the posterior mean values for each design candidate (in predict_candidate_X).
-## post_stdev: The numpy array holding the posterior standard deviation value for each design candidate (in predict_candidate_X).
-## x_label: The text label associated with the x-axis (design candidates).
-## y_label: The text label associated with the y-axis (subject responses).
-## title: The title of the figure.
-## sigma_coef: The coefficient determining the uncertainty range. Must be a positive float value.
-
-## NOTE: The uncertainty range is defined as the following:
-##       [post_mean - sigma_coef * post_stdev, post_mean + sigma_coef * post_stdev]
-## NOTE: The post_mean and post_stdev must be the posterior statistics 
-##       obtained by gpr.predict(predict_candidates_X) after gpr.fit(fit_data_X, obs_data_Y).
-##       In other words, post_mean and post_stdev must hold posterior statistics
-##       for GPAL optimization of the upcoming (next) trial.
-##       Then GPAL will select the design candidate with the largest posterior standard deviation,
-##       which is equivalent to the largest uncertainty range.
-
-## Return Value Descriptions
-## figure: The resulting figure.
-## ax: A plot visualized in the resulting figure.
-
 def plot_GPAL_uncertainty(fig_size:Tuple[int, int], 
                           fit_data_X:npt.NDArray, 
                           obs_data_Y:npt.NDArray, 
@@ -49,6 +19,37 @@ def plot_GPAL_uncertainty(fig_size:Tuple[int, int],
                           y_label:str, 
                           title:str, 
                           sigma_coef:float=1.0):
+    """
+    This function plots the uncertainty plot.
+    This 'uncertainty plot' visualizes the experimental data as a scatterplot.
+    Then it visualizes the posterior mean calculated for each stimulus candidate,
+    and the uncertainty range determined by the associated posterior standard deviations.
+
+    - Parameter Descriptions
+    fig_size: The size of the figure. Must be a tuple holding integer values.
+    fit_data_X: The numpy array recording the provided stimulus features for each given experimental trial. 
+    obs_data_Y: The numpy array recording the subject's responses for each given experimental trial.
+    predict_candidates_X: The numpy array containing the stimulus candidates for GPAL optimization.
+    post_mean: The numpy array holding the posterior mean values for each stimulus candidate (in predict_candidate_X).
+    post_stdev: The numpy array holding the posterior standard deviation value for each stimulus candidate (in predict_candidate_X).
+    x_label: The text label associated with the x-axis (stimulus candidates).
+    y_label: The text label associated with the y-axis (subject responses).
+    title: The title of the figure.
+    sigma_coef: The coefficient determining the uncertainty range. Must be a positive float value.
+
+    NOTE: The uncertainty range is defined as the following:
+          [post_mean - sigma_coef * post_stdev, post_mean + sigma_coef * post_stdev]
+    NOTE: The post_mean and post_stdev must be the posterior statistics 
+          obtained by gpr.predict(predict_candidates_X) after gpr.fit(fit_data_X, obs_data_Y).
+          In other words, post_mean and post_stdev must hold posterior statistics
+          for GPAL optimization of the upcoming (next) trial.
+          Then GPAL will select the stimulus candidate with the largest posterior standard deviation,
+          which is equivalent to the largest uncertainty range.
+
+    Return Value Descriptions
+    figure: The resulting figure.
+    ax: A plot visualized in the resulting figure.
+    """
     if not isinstance(fig_size, Tuple):
         raise TypeError(f"fig_size should be a tuple, got the type of {type(fig_size).__name__}.")
     if any([not isinstance(fs, int) for fs in fig_size]):
@@ -97,7 +98,7 @@ def plot_GPAL_uncertainty(fig_size:Tuple[int, int],
     
     ## Plots the experiment data as a scatterplot.
     ax.scatter(fit_data_X.ravel(), obs_data_Y, c='black', label='Data')
-    ## Plots the posterior mean values associated with every design candidate.
+    ## Plots the posterior mean values associated with every stimulus candidate.
     ax.plot(predict_candidates_X, post_mean, label="Prediction", linewidth=2.5, color='black')
     ## Plots the uncertainty range with semi-transparent color.
     ax.fill_between(predict_candidates_X, post_mean-sigma_coef*post_stdev, 
@@ -111,40 +112,6 @@ def plot_GPAL_uncertainty(fig_size:Tuple[int, int],
     return figure, ax
 
 
-
-
-## This function plots the uncertainty plot at two consecutive trials.
-## Since GPAL optimizes the experiment design adaptively, 
-## we can visualize how the uncertainty plot changes after a single iteration of GPAL.
-## This figure visualizes the uncertainty plot at a certain 'target' trial (on the right subplot) 
-## and at the 'previous' trial (on the left subplot).
-## The uncertainty is calculated based on the GPAL optimization conducted up to the (target/previous) trial.
-## We can directly observe how the uncertainty interval shrinks at the GPAL-selected design point.
-## Moreover, a dotted vertical line indicates the design candidate value
-## whose associated posterior standard deviation is the largest.
-## We can see the design coordinate of the new experiment design (a red dot in the target trial)
-## exactly corresponds to the position of the vertical line in the previous trial.
-
-## Parameter descriptions
-## fig_size: The size of the figure. Must be a tuple holding integer values.
-## font_size: The font size of the text in the figure. Must be positive.
-## fit_data_X: The numpy array recording the provided design variables, up to the target trial
-## obs_data_Y: The numpy array recording the subject responses, up to the target trial
-## predict_candidates_X: The numpy array containing the design candidates for GPAL optimization.
-## post_mean_previous: The numpy array holding the posterior mean value for each design candidate, up to the previous trial
-## post_stdev_previous: The numpy array holding the posterior standard deviation value for each design candidate, up to the previous trial.
-## post_mean_target: The numpy array holding the posterior mean values, up to the target trial.
-## post_stdev_target: The numpy array holding the posterior standard deviation values, up to the target trial.
-## title: The title of the whole figure.
-## title_previous: The title of the left figure (GPAL up to the previous trial)
-## title_target: The title of the right figure (GPAL up to the target trial)
-## max_stdev_design: The design coordinate with maximum posterior standard deviation, in the previous trial.
-## sigma_coef: The coefficient determining the uncertainty range. Must be a positive float value.
-
-## Return Value Specifications
-## figure: The whole resulting figure.
-## ax1: A plot visualized in the left subplot of the figure.
-## ax2: A plot visualized in the right subplot of the figure.
 
 def plot_GPAL_compare_uncertainty(fig_size:Tuple[int, int], 
                                   font_size:int, 
@@ -162,7 +129,40 @@ def plot_GPAL_compare_uncertainty(fig_size:Tuple[int, int],
                                   title_target:str, 
                                   max_stdev_design:float, 
                                   sigma_coef:float=1.0):
-    
+    """
+    This function plots the uncertainty plot at two consecutive trials.
+    Since GPAL optimizes the experiment design adaptively, 
+    we can visualize how the uncertainty plot changes after a single iteration of GPAL.
+    This figure visualizes the uncertainty plot at a certain 'target' trial (on the right subplot) 
+    and at the 'previous' trial (on the left subplot).
+    The uncertainty is calculated based on the GPAL optimization conducted up to the (target/previous) trial.
+    We can directly observe how the uncertainty interval shrinks at the GPAL-selected design point.
+    Moreover, a dotted vertical line indicates the stimulus candidate value
+    whose associated posterior standard deviation is the largest.
+    We can see the design coordinate of the new experiment design (a red dot in the target trial)
+    exactly corresponds to the position of the vertical line in the previous trial.
+
+    - Parameter descriptions
+    fig_size: The size of the figure. Must be a tuple holding integer values.
+    font_size: The font size of the text in the figure. Must be positive.
+    fit_data_X: The numpy array recording the provided design variables, up to the target trial
+    obs_data_Y: The numpy array recording the subject responses, up to the target trial
+    predict_candidates_X: The numpy array containing the stimulus candidates for GPAL optimization.
+    post_mean_previous: The numpy array holding the posterior mean value for each stimulus candidate, up to the previous trial
+    post_stdev_previous: The numpy array holding the posterior standard deviation value for each stimulus candidate, up to the previous trial.
+    post_mean_target: The numpy array holding the posterior mean values, up to the target trial.
+    post_stdev_target: The numpy array holding the posterior standard deviation values, up to the target trial.
+    title: The title of the whole figure.
+    title_previous: The title of the left figure (GPAL up to the previous trial)
+    title_target: The title of the right figure (GPAL up to the target trial)
+    max_stdev_design: The stimulus feature value with maximum posterior standard deviation, in the previous trial.
+    sigma_coef: The coefficient determining the uncertainty range. Must be a positive float value.
+
+    - Return Value Specifications
+    figure: The whole resulting figure.
+    ax1: A plot visualized in the left subplot of the figure.
+    ax2: A plot visualized in the right subplot of the figure.
+    """
     if not isinstance(fig_size, tuple):
         raise TypeError(f"fig_size should be a tuple, got the type of {type(fig_size).__name__}")
     if any([not isinstance(fs, int) for fs in fig_size]):
@@ -272,42 +272,43 @@ def plot_GPAL_compare_uncertainty(fig_size:Tuple[int, int],
 
 
 
-## This function plots the design selection frequencies of 1D GPAL as a 2D histogram.
-## GPAL selects the optimal design value among design candidates in an adaptive manner.
-## We can observe the distribution of those 'selected' design values (of the design variable),
-## therefore examine features of the function of our interest.
-## As "1D" in the function name implies, this functions plots a 2D histogram,
-## where the x-axis denotes the design values and the y-axis indicates the frequencies.
-
-
-## Parameter Descriptions.
-## fig_size: The size of the figure. Must be a tuple holding integer values.
-## num_data: The number of selected design values (i.e. the optimal design candidates).  
-## design_var: A numpy array holding all selected design values.
-## bins: The number of equal-length bins dividing the range of selected design values.
-## ranges: A tuple indicating the total range of the selected design values.
-## x_label: The text label associated with the x-axis (design candidates).
-## y_label: The text label associated with the y-axis (subject responses).
-## title: The title of the figure.
-## mode: A string determining the mode of the histogram. Must be either 'sum' or 'average'.
-##       Setting it to 'average' will normalize the histogram values.
-
-## NOTE: The ranges parameter will be automatically set to the folloiwng, if not specified explicitly.
-##       ranges = (np.min(design_var), np.max(design_var))
-
-## Return Value Specifications
-## figure: The whole resulting figure.
-## ax: A plot visualized in the figure.
 
 def plot_frequency_histogram_1D(fig_size:Tuple[int, int], 
                                 num_data:int, 
-                                design_var:npt.NDArray, 
+                                stimulus_feature:npt.NDArray, 
                                 bins:int, 
                                 ranges:Optional[Tuple[float, float]], 
                                 x_label:str, 
                                 y_label:str, 
                                 title:str, 
                                 mode:str="sum"):
+    """
+    plot_frequency_histogram_1D plots the stimulus selection frequencies of 1D GPAL as a 2D histogram.
+    GPAL selects the optimal stimulus among stimulus candidates in an adaptive manner.
+    We can observe the distribution of those 'selected' stimulus values,
+    and therefore examine properties of the function of our interest.
+    As "1D" in the function name implies, this functions plots a 2D histogram,
+    where the x-axis denotes the stimulus values and the y-axis indicate the frequencies.
+
+    - Parameter Descriptions.
+    fig_size: The size of the figure. Must be a tuple holding integer values.
+    num_data: The number of selected stimuli (i.e. the optimal stimulus candidates).  
+    design_var: A numpy array holding all selected stimuli.
+    bins: The number of equal-length bins dividing the range of selected stimuli.
+    ranges: A tuple indicating the total range of the selected stimuli.
+    x_label: The text label associated with the x-axis (stimulus candidates).
+    y_label: The text label associated with the y-axis (subject responses).
+    title: The title of the figure.
+    mode: A string determining the mode of the histogram. Must be either 'sum' or 'average'.
+          Setting it to 'average' will return the relative frequencies, which will be summed to 1.
+
+    NOTE: The ranges parameter will be automatically set to the folloiwng, if not specified explicitly.
+          ranges = (np.min(stimulus_feature)), np.max(stimulus_feature))
+
+    - Return Value Specifications
+    figure: The whole resulting figure.
+    ax: A plot visualized in the figure.
+    """
     if not isinstance(fig_size, tuple):
         raise TypeError(f"fig_size should be a tuple, got the type of {type(fig_size).__name__}.")
     if any([not isinstance(fs, int) for fs in fig_size]):
@@ -318,10 +319,10 @@ def plot_frequency_histogram_1D(fig_size:Tuple[int, int],
         raise TypeError(f"num_data should be an integer value, got the type of {type(num_data).__name__}.")
     if num_data<1:
         raise ValueError(f"num_data should be a positive integer, got {num_data}.")
-    if not isinstance(design_var, np.ndarray):
-        raise TypeError(f"design_var should be a numpy array, got the type of {type(design_var).__name__}.")
-    if design_var.ndim!=1:
-        raise ValueError(f"dv1 should be a 1D array, got {design_var.ndim} dimensions.")
+    if not isinstance(stimulus_feature, np.ndarray):
+        raise TypeError(f"stimulus_feature should be a numpy array, got the type of {type(stimulus_feature).__name__}.")
+    if stimulus_feature.ndim!=1:
+        raise ValueError(f"stimulus_feature should be a 1D array, got {stimulus_feature.ndim} dimensions.")
     if not isinstance(bins, int):
         raise TypeError(f"bins should be an integer value, got the type of {type(bins).__name__}.")
     if ranges is not None:
@@ -349,7 +350,7 @@ def plot_frequency_histogram_1D(fig_size:Tuple[int, int],
     ## Creating a histogram with np.nistogram()
     ## hist: The values of the resulting histogram.
     ## dv1_pos: The values at the edge of each bins. 
-    hist, dv1_pos=np.histogram(design_var, bins=bins, range=ranges)
+    hist, dv1_pos=np.histogram(stimulus_feature, bins=bins, range=ranges)
     if mode=='average':
         hist=hist/num_data
 
@@ -379,43 +380,9 @@ def plot_frequency_histogram_1D(fig_size:Tuple[int, int],
     return figure, ax
 
 
-
-## This function plots the design selection frequencies of 2D GPAL as a 3D histogram.
-## GPAL selects the optimal design value among design candidates in an adaptive manner.
-## We can observe the distribution of those 'selected' design values (of the design variable),
-## therefore examine features of the function of our interest.
-## As "2D" in the function name implies, this functions plots a 3DD histogram,
-## where the (x,y) coordinate denotes the design values and the z-axis indicates the frequencies.
-
-
-## Parameter Descriptions.
-## fig_size: The size of the figure. Must be a tuple holding integer values.
-## num_data: The number of selected design values (i.e. the optimal design candidates).  
-## design_var: A numpy array holding all selected design (coordinate) values. 
-##             Each row corresponds to a single design. Must contain 2 columns (considering 2D GPAL).
-## bins: A list holding the number of equal-length bins for the x,y axis. 
-##       Each element corresponds to the number of bins for each axis. Must be of length 2.
-## ranges: A list of 2 lists, indicating the total range of the selected design values.
-##         The first list elements specifies the range of x-coordinate values of the selected designs.
-##         The second list element specifies the range of y-coordinate values of the selected designs.
-## x_label: The text label associated with the x-axis (first design variable)
-## y_label: The text label associated with the y-axis (second design variable)
-## z_label: The text label associated with the z-axis.
-## title: The title of the figure.
-## mode: A string determining the mode of the histogram. Must be either 'sum' or 'average'.
-##       Setting it to 'average' will normalize the histogram values.
-
-
-## NOTE: The ranges parameter will be automatically set to the folloiwng, if not specified explicitly.
-##       ranges = [[np.min(design_var[:,0]), np.max(design_var[:,0])],
-##                 [np.min(design_var[:,1]), np.max(design_var[:,1])]]
-
-## Return Value Specifications
-## figure: The whole resulting figure.
-## ax: A plot visualized in the figure.
 def plot_frequency_histogram_2D(fig_size:Tuple[int, int], 
                                 num_data:int, 
-                                design_vars:npt.NDArray, 
+                                stimulus_feature:npt.NDArray, 
                                 bins:list[int], 
                                 ranges:Optional[list[list[float]]], 
                                 xlabel:str, 
@@ -423,7 +390,41 @@ def plot_frequency_histogram_2D(fig_size:Tuple[int, int],
                                 zlabel:str, 
                                 title:str, 
                                 mode:str='sum'):
-    
+    """
+    This function plots the stimulus selection frequencies of 2D GPAL as a 3D histogram.
+    GPAL selects the optimal stimulus among stimulus candidates in an adaptive manner.
+    We can observe the distribution of those 'selected' stimuli,
+    therefore examine features of the function of our interest.
+    As "2D" in the function name implies, this functions plots a 3D histogram,
+    where the (x,y) coordinate represents the stimulus and the z-axis indicates the frequencies.
+
+
+    - Parameter Descriptions.
+    fig_size: The size of the figure. Must be a tuple holding integer values.
+    num_data: The number of selected stimuli (i.e. the optimal ones).  
+    design_var: A numpy array holding all selected stimuli. 
+                Each row corresponds to a single stimulus. Must contain 2 columns (due to 2D GPAL).
+    bins: A list holding the number of equal-length bins for the x,y axis. 
+          Each element corresponds to the number of bins for each axis. Must be of length 2.
+    ranges: A list of 2 lists, indicating the total range of the selected stimuli.
+            The first list elements specifies the range of the first stimulus feature of the selected stimuli.
+            The second list element specifies the range of the second stimulus feature of the selected stimuli.
+    x_label: The text label associated with the x-axis (first stimulus feature)
+    y_label: The text label associated with the y-axis (second stimulus feature)
+    z_label: The text label associated with the z-axis.
+    title: The title of the figure.
+    mode: A string determining the mode of the histogram. Must be either 'sum' or 'average'.
+          Setting it to 'average' will return the relative frequencies, which will be summed to 1.
+
+
+    NOTE: The ranges parameter will be automatically set to the folloiwng, if not specified explicitly.
+          ranges = [[np.min(stimulus_feature[:,0]), np.max(stimulus_feature[:,0])],
+                    [np.min(stimulus_feature[:,1]), np.max(stimulus_feature[:,1])]]
+
+    - Return Value Specifications
+    figure: The whole resulting figure.
+    ax: A plot visualized in the figure.
+    """
     if not isinstance(fig_size, tuple):
         raise TypeError(f"fig_size should be a tuple, got the type of {type(fig_size).__name__}.")
     if any([not isinstance(fs, int) for fs in fig_size]):
@@ -432,12 +433,12 @@ def plot_frequency_histogram_2D(fig_size:Tuple[int, int],
         raise ValueError(f"fig_size should be of length 2, got {len(fig_size)}.")
     if not isinstance(num_data, int):
         raise TypeError(f"num_data should be an integer value, got the type of {type(num_data).__name__}.")
-    if not isinstance(design_vars, np.ndarray):
-        raise TypeError(f"design_vars should be a numpy array, got the type of {type(design_vars).__name__}.")
-    if design_vars.ndim!=2:
-        raise ValueError(f"design_vars should be a 2D array, got {design_vars.ndim} dimensions.")
-    if design_vars.shape[1]!=2:
-        raise ValueError(f"design_vars should have two columns, got {design_vars.shape[1]} columns.")
+    if not isinstance(stimulus_feature, np.ndarray):
+        raise TypeError(f"stimulus_feature should be a numpy array, got the type of {type(stimulus_feature).__name__}.")
+    if stimulus_feature.ndim!=2:
+        raise ValueError(f"stimulus_feature should be a 2D array, got {stimulus_feature.ndim} dimensions.")
+    if stimulus_feature.shape[1]!=2:
+        raise ValueError(f"stimulus_feature should have two columns, got {stimulus_feature.shape[1]} columns.")
     if not isinstance(bins, list):
         raise TypeError(f"bins should be a list, got the type of {type(bins).__name__}.")
     if not all([isinstance(b, int) for b in bins]):
@@ -476,7 +477,7 @@ def plot_frequency_histogram_2D(fig_size:Tuple[int, int],
        
     figure=plt.figure()
     ax=figure.add_subplot(projection='3d')
-    hist, dv1_edge, dv2_edge=np.histogram2d(design_vars[:,0], design_vars[:,1], bins=bins, range=ranges)
+    hist, dv1_edge, dv2_edge=np.histogram2d(stimulus_feature[:,0], stimulus_feature[:,1], bins=bins, range=ranges)
     if mode=="average":
         hist=hist/num_data
 

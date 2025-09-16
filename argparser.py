@@ -21,9 +21,6 @@ def argparser():
     parser.add_argument('--save_results_dir', default='results', help='A directory to store the task results in .csv format.')
     parser.add_argument('--save_models_dir', default='models', help='A directory to store the trained Gaussian process regressor model.')
     parser.add_argument('--save_figures_dir', default='figures', help='A directory to store the figures for analyzing the results.')
-
-
-
     
     
     ## return args
