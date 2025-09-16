@@ -36,5 +36,4 @@ We've provided explanatory materials in the github Wiki of this repository.
 Please refer to this [Wiki page](https://github.com/KAIST-PAI-lab/GPALexp/wiki) for further details.  
 
 ## Contacts
-If there are any things that the maintainer should be noticed (bug reports, update requests, questions, future suggestions, etc),  
-please contact Junyup Kim (ytrewq271828@alumni.kaist.ac.kr).
+If there are any things that the maintainer should be noticed (bug reports, update requests, questions, future suggestions, etc), please feel free to contact Junyup Kim (ytrewq271828@alumni.kaist.ac.kr).
