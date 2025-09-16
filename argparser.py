@@ -1,7 +1,7 @@
 import argparse
 
 def argparser():
-    parser = argparse.ArgumentParser(description='Run the Number Line Estimation Experiment.')
+    parser = argparse.ArgumentParser()
     parser.add_argument('--num_trials', type=int, default=20, help='Number of trials in the experiment.')
     parser.add_argument('--seed', default=None, help='Random seed for reproducibility.')
     parser.add_argument('--num_features', type=int, default=1, help='The number of stimulus features to be optimized.')
