@@ -136,7 +136,7 @@ data_record[trial_idx][0] = initial_stimulus
 data_record[trial_idx][1] = response
 ```
 
-</div>
+</div>  
 
 `data_record` will be iteratively updated on each trial, and saved as a CSV file upon completion of the task (Lines 198-202).  
 
