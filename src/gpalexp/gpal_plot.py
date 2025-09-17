@@ -62,8 +62,10 @@ def plot_GPAL_uncertainty(fig_size:Tuple[int, int],
         raise ValueError(f"fit_data_X should be a 2D array, got {fit_data_X.ndim} dimensions.")
     if not isinstance(predict_candidates_X, np.ndarray):
         raise TypeError(f"predict_candidates_X should be a numpy array, got the type of {type(predict_candidates_X).__name__}.")
-    if predict_candidates_X.ndim!=1:
-        raise ValueError(f"predict_candidates_X should be a 1D array, got {predict_candidates_X.ndim} dimensions.")
+    if predict_candidates_X.ndim!=2:
+        raise ValueError(f"predict_candidates_X should be a 2D array, got {predict_candidates_X.ndim} dimensions.")
+    if predict_candidates_X.shape[1]!=1:
+        raise ValueError(f"predict_candidates_X should have a single column, got {predict_candidates_X.shape[1]} columns.")
     if not isinstance(obs_data_Y, np.ndarray):
         raise TypeError(f"obs_data_Y should be a numpy array, got the type of {type(obs_data_Y).__name__}.")
     if obs_data_Y.ndim!=1:
@@ -99,7 +101,7 @@ def plot_GPAL_uncertainty(fig_size:Tuple[int, int],
     ## Plots the experiment data as a scatterplot.
     ax.scatter(fit_data_X.ravel(), obs_data_Y, c='black', label='Data')
     ## Plots the posterior mean values associated with every stimulus candidate.
-    ax.plot(predict_candidates_X, post_mean, label="Prediction", linewidth=2.5, color='black')
+    ax.plot(predict_candidates_X.ravel(), post_mean, label="Prediction", linewidth=2.5, color='black')
     ## Plots the uncertainty range with semi-transparent color.
     ax.fill_between(predict_candidates_X, post_mean-sigma_coef*post_stdev, 
                      post_mean+sigma_coef*post_stdev, alpha=0.3, label='Uncertainty')
@@ -179,8 +181,10 @@ def plot_GPAL_compare_uncertainty(fig_size:Tuple[int, int],
         raise ValueError(f"fit_data_X should be a 2D array, got {fit_data_X.ndim} dimensions.")
     if not isinstance(predict_candidates_X, np.ndarray):
         raise TypeError(f"predict_candidates_X should be a numpy array, got the type of {type(predict_candidates_X).__name__}.")
-    if predict_candidates_X.ndim!=1:
-        raise ValueError(f"predict_candidates_X should be a 1D array, got {predict_candidates_X.ndim} dimensions.")
+    if predict_candidates_X.ndim!=2:
+        raise ValueError(f"predict_candidates_X should be a 2D array, got {predict_candidates_X.ndim} dimensions.")
+    if predict_candidates_X.shape[1]!=1:
+        raise ValueError(f"predict_candidates_X should have a single column, got {predict_candidates_X.shape[1]} columns.")
     if not isinstance(obs_data_Y, np.ndarray):
         raise TypeError(f"obs_data_Y should be a numpy array, got the type of {type(obs_data_Y).__name__}.")
     if obs_data_Y.ndim!=1:
@@ -235,12 +239,12 @@ def plot_GPAL_compare_uncertainty(fig_size:Tuple[int, int],
     ## Plotting the experiment data up to the previous trial.
     ax1.scatter(fit_data_X[:-1], obs_data_Y[:-1], c='black', label='Data')
     ## Plotting the posterior mean, calculated with so-far obtained experiment data.
-    ax1.plot(predict_candidates_X, post_mean_previous, label="Prediction", linewidth=2.5, color='black')
+    ax1.plot(predict_candidates_X.ravel(), post_mean_previous, label="Prediction", linewidth=2.5, color='black')
     ## Plotting the uncertainty range for each design candidate.
     ax1.fill_between(predict_candidates_X.ravel(), post_mean_previous-sigma_coef*post_stdev_previous,
                      post_mean_previous+sigma_coef*post_stdev_previous, alpha=0.3, label='Uncertainty')
     ## Plotting a dotted vertical line, at the design candidate associated with maximum posterior standard deviation.
-    ax1.axvline(x=fit_data_X[-1], color='green', linestyle='--', linewidth=3)
+    ax1.axvline(x=fit_data_X[-1], color='green', linestyle='--', linewidth=3, zorder=3)
     ax1.set_xlabel(xlabel, fontsize=16)
     ax1.set_ylabel(ylabel, fontsize=16)
     ## Setting the title for the left subplot.
@@ -251,14 +255,14 @@ def plot_GPAL_compare_uncertainty(fig_size:Tuple[int, int],
     ## Plotting the experiment data up to the target trial.
     ax2.scatter(fit_data_X, obs_data_Y, c='black')
     ## Plotting the posterior mean, calculated with so-far obtained experiment data.
-    ax2.plot(predict_candidates_X, post_mean_target, linewidth=2.5, color='black')
+    ax2.plot(predict_candidates_X.ravel(), post_mean_target, linewidth=2.5, color='black')
     ## Plotting the uncertainty range for each design candidate.
     ax2.fill_between(predict_candidates_X.ravel(), post_mean_target-sigma_coef*post_stdev_target, 
                      post_mean_target+sigma_coef*post_stdev_target, alpha=0.3)
     ## Plotting an experiment data for the newly selected experimental design.
-    ax2.scatter(fit_data_X[-1], obs_data_Y[-1], c='red')
+    ax2.scatter(fit_data_X[-1], obs_data_Y[-1], c='red', zorder=3)
     ## Plotting a dotted vertical line, at the design candidate associated with maximums posterior standard deviation.
-    ax2.axvline(x=max_stdev_design, color='green', linestyle='--', linewidth=3)
+    ax2.axvline(x=max_stdev_design, color='green', linestyle='--', linewidth=3, zorder=3)
     ax2.set_xlabel(xlabel, fontsize=16)
     ax2.set_ylabel(ylabel, fontsize=16)
     ## Setting the title for the right subplot.
@@ -293,7 +297,7 @@ def plot_frequency_histogram_1D(fig_size:Tuple[int, int],
     - Parameter Descriptions.
     fig_size: The size of the figure. Must be a tuple holding integer values.
     num_data: The number of selected stimuli (i.e. the optimal stimulus candidates).  
-    design_var: A numpy array holding all selected stimuli.
+    stimulus_feature: A numpy array holding all selected stimuli.
     bins: The number of equal-length bins dividing the range of selected stimuli.
     ranges: A tuple indicating the total range of the selected stimuli.
     x_label: The text label associated with the x-axis (stimulus candidates).
@@ -321,8 +325,10 @@ def plot_frequency_histogram_1D(fig_size:Tuple[int, int],
         raise ValueError(f"num_data should be a positive integer, got {num_data}.")
     if not isinstance(stimulus_feature, np.ndarray):
         raise TypeError(f"stimulus_feature should be a numpy array, got the type of {type(stimulus_feature).__name__}.")
-    if stimulus_feature.ndim!=1:
-        raise ValueError(f"stimulus_feature should be a 1D array, got {stimulus_feature.ndim} dimensions.")
+    if stimulus_feature.ndim!=2:
+        raise ValueError(f"stimulus_feature should be a 2D array, got {stimulus_feature.ndim} dimensions.")
+    if stimulus_feature.shape[1]!=1:
+        raise ValueError(f"stimulus_feature should have a single column, got {stimulus_feature.shape[1]} columns.")
     if not isinstance(bins, int):
         raise TypeError(f"bins should be an integer value, got the type of {type(bins).__name__}.")
     if ranges is not None:
@@ -350,7 +356,7 @@ def plot_frequency_histogram_1D(fig_size:Tuple[int, int],
     ## Creating a histogram with np.nistogram()
     ## hist: The values of the resulting histogram.
     ## dv1_pos: The values at the edge of each bins. 
-    hist, dv1_pos=np.histogram(stimulus_feature, bins=bins, range=ranges)
+    hist, dv1_pos=np.histogram(stimulus_feature.ravel(), bins=bins, range=ranges)
     if mode=='average':
         hist=hist/num_data
 
