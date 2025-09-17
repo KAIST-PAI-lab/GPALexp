@@ -90,7 +90,7 @@ GPALexp supports combining multiple kernels, providing additional flexibility in
 <div align="center">
 
 ```
-kernel_type, kernel_param = argsConstructor([0,6,8], [[2.5, (1e-5, 1e5)], [1, (1e-5, 1e5)], [0.01, (1e-5, 1e5)]])
+kernel_type, kernel_param = argsConstructor([0,6,8], [[1.0, (1e-5, 1e5)], [1, (1e-5, 1e5)], [0.01, (1e-5, 1e5)]])
 kernel, gpr = GPRInstance(kernel_type, kernel_param, ‘k1*k2+k3’)
 ```
 
@@ -117,7 +117,7 @@ The variable `stimulus_list` specifies the full set of candidate stimuli. In thi
 
 The selected stimulus is then passed to `show_and_get_response()`, which is a task-specific function that displays the stimulus and records the participant’s response (Line 143). This function should be customized for each task using PsychoPy or an equivalent experimental software.  
 
-<div align="center">  
+<div align="center">
 
 ```
 response = show_and_get_response(initial_stimulus, visuals, max_number, …)
