@@ -74,6 +74,7 @@ The first step is to initialize a GP regressor for the experiment using `GPRInst
 In GP regression, a kernel (also called a covariance function) defines how similar two input points are, which in turn determines the shape and smoothness of the function the GP can model to connect them. GPALexp supports nine types of kernels, each assigned a numerical index. Different types of kernels (e.g., RBF, Linear) represent distinct assumptions about the underlying patterns in the data. Full information on the available kernel types and their associated indices are provided in [this Wiki page](https://github.com/KAIST-PAI-lab/GPALexp/wiki/Documentation:-argsConstructor()).  
 
 The radial basis function (RBF) kernel (Index 6) predicts smooth and continuous functions while accommodating a wide variety of functional forms. This kernel is well suited for GPAL’s purpose of exploratory modeling unless the user has strong prior assumptions about the underlying pattern (e.g., linear function). The following code shows how to define an RBF kernel using `argsConstructor()`.  
+
 <div align="center">
 
 ```
@@ -115,6 +116,7 @@ initial_stimulus=np.random.choice(stimulus_list, size=1)
 The variable `stimulus_list` specifies the full set of candidate stimuli. In this example, the values (i.e., number of dots) range from 5 (start) to 500 (end) with an interval of 5. The `initial_stimulus`, which defines the stimulus for the first trial, is randomly sampled from this set of candidates. When prior knowledge suggests a useful starting point, the user can fix the initial stimulus by adjusting the `initial_stimulus` variable at line 143 (e.g., initial_stimulus = 5).  
 
 The selected stimulus is then passed to `show_and_get_response()`, which is a task-specific function that displays the stimulus and records the participant’s response (Line 143). This function should be customized for each task using PsychoPy or an equivalent experimental software.  
+
 <div align="center">
 
 ```
@@ -124,6 +126,7 @@ response = show_and_get_response(initial_stimulus, visuals, max_number, …)
 </div>   
 
 After obtaining the participant’s response, the selected stimulus and the corresponding response are stored in a placeholder named `data_record`, which is created as follows (Line 100). The code indicates that we will record 2 values for each trial, which is the single feature of the stimulus and the associated response.  
+
 <div align="center">
   
 ```
@@ -133,6 +136,7 @@ data_record = np.zeros((num_trials, 2)
 </div>  
 
 The data from the first trial are stored in the first row of the data_record. The trial index (`trial_idx`), which is 0 on the first trial, specifies the row in which to store the data (Lines 153-154):    
+
 <div align="center">
 
 ```
