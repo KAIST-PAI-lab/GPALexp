@@ -98,10 +98,11 @@ def plot_GPAL_uncertainty(fig_size:Tuple[int, int],
     figure=plt.figure(figsize=fig_size)
     ax=figure.add_subplot(1,1,1)
     
+
     ## Plots the experiment data as a scatterplot.
-    ax.scatter(fit_data_X.ravel(), obs_data_Y, c='black', label='Data')
+    ax.scatter(fit_data_X, obs_data_Y, c='black', label='Data')
     ## Plots the posterior mean values associated with every stimulus candidate.
-    ax.plot(predict_candidates_X.ravel(), post_mean, label="Prediction", linewidth=2.5, color='black')
+    ax.plot(predict_candidates_X, post_mean, label="Prediction", linewidth=2.5, color='black')
     ## Plots the uncertainty range with semi-transparent color.
     ax.fill_between(predict_candidates_X, post_mean-sigma_coef*post_stdev, 
                      post_mean+sigma_coef*post_stdev, alpha=0.3, label='Uncertainty')
@@ -232,6 +233,9 @@ def plot_GPAL_compare_uncertainty(fig_size:Tuple[int, int],
     if not isinstance(title_target, str):
         raise TypeError(f"title_target should be a string value, got the type of {type(title_target).__name__}.")
     
+    fit_data_X=fit_data_X.ravel()
+    predict_candidates_X=predict_candidates_X.ravel()
+    
     ## Creating a figure with two subplots.
     figure, (ax1, ax2)=plt.subplots(1,2, figsize=fig_size)
     
@@ -239,9 +243,9 @@ def plot_GPAL_compare_uncertainty(fig_size:Tuple[int, int],
     ## Plotting the experiment data up to the previous trial.
     ax1.scatter(fit_data_X[:-1], obs_data_Y[:-1], c='black', label='Data')
     ## Plotting the posterior mean, calculated with so-far obtained experiment data.
-    ax1.plot(predict_candidates_X.ravel(), post_mean_previous, label="Prediction", linewidth=2.5, color='black')
+    ax1.plot(predict_candidates_X, post_mean_previous, label="Prediction", linewidth=2.5, color='black')
     ## Plotting the uncertainty range for each design candidate.
-    ax1.fill_between(predict_candidates_X.ravel(), post_mean_previous-sigma_coef*post_stdev_previous,
+    ax1.fill_between(predict_candidates_X, post_mean_previous-sigma_coef*post_stdev_previous,
                      post_mean_previous+sigma_coef*post_stdev_previous, alpha=0.3, label='Uncertainty')
     ## Plotting a dotted vertical line, at the design candidate associated with maximum posterior standard deviation.
     ax1.axvline(x=fit_data_X[-1], color='green', linestyle='--', linewidth=3, zorder=3)
@@ -255,9 +259,9 @@ def plot_GPAL_compare_uncertainty(fig_size:Tuple[int, int],
     ## Plotting the experiment data up to the target trial.
     ax2.scatter(fit_data_X, obs_data_Y, c='black')
     ## Plotting the posterior mean, calculated with so-far obtained experiment data.
-    ax2.plot(predict_candidates_X.ravel(), post_mean_target, linewidth=2.5, color='black')
+    ax2.plot(predict_candidates_X, post_mean_target, linewidth=2.5, color='black')
     ## Plotting the uncertainty range for each design candidate.
-    ax2.fill_between(predict_candidates_X.ravel(), post_mean_target-sigma_coef*post_stdev_target, 
+    ax2.fill_between(predict_candidates_X, post_mean_target-sigma_coef*post_stdev_target, 
                      post_mean_target+sigma_coef*post_stdev_target, alpha=0.3)
     ## Plotting an experiment data for the newly selected experimental design.
     ax2.scatter(fit_data_X[-1], obs_data_Y[-1], c='red', zorder=3)
@@ -349,6 +353,7 @@ def plot_frequency_histogram_1D(fig_size:Tuple[int, int],
     if not isinstance(title, str):
         raise TypeError(f"title should be a string value, got the type of {type(title).__name__}.")
 
+    stimulus_feature = stimulus_feature.ravel()
     ## Drawing a figure
     figure=plt.figure(figsize=fig_size)
     ax=figure.add_subplot(1,1,1)
@@ -356,7 +361,7 @@ def plot_frequency_histogram_1D(fig_size:Tuple[int, int],
     ## Creating a histogram with np.nistogram()
     ## hist: The values of the resulting histogram.
     ## dv1_pos: The values at the edge of each bins. 
-    hist, dv1_pos=np.histogram(stimulus_feature.ravel(), bins=bins, range=ranges)
+    hist, dv1_pos=np.histogram(stimulus_feature, bins=bins, range=ranges)
     if mode=='average':
         hist=hist/num_data
 
