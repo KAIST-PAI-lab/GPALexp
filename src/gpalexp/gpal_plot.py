@@ -229,7 +229,7 @@ def plot_GPAL_compare_uncertainty(fig_size:Tuple[int, int],
         raise TypeError(f"title_target should be a string value, got the type of {type(title_target).__name__}.")
     
     ## Creating a figure with two subplots.
-    figure, (ax1, ax2)=plt.subplots(2,1, figsize=fig_size)
+    figure, (ax1, ax2)=plt.subplots(1,2, figsize=fig_size)
     
     ## Left subplot
     ## Plotting the experiment data up to the previous trial.
