@@ -98,7 +98,9 @@ def plot_GPAL_uncertainty(fig_size:Tuple[int, int],
     figure=plt.figure(figsize=fig_size)
     ax=figure.add_subplot(1,1,1)
     
-
+    fit_data_X=fit_data_X.ravel()
+    predict_candidates_X=predict_candidates_X.ravel()
+    
     ## Plots the experiment data as a scatterplot.
     ax.scatter(fit_data_X, obs_data_Y, c='black', label='Data')
     ## Plots the posterior mean values associated with every stimulus candidate.
