@@ -117,7 +117,7 @@ The selected stimulus is then passed to `show_and_get_response()`, which is a ta
 response = show_and_get_response(initial_stimulus, visuals, max_number, …)
 ```
 
-</div>  
+</div>   
 
 After obtaining the participant’s response, the selected stimulus and the corresponding response are stored in a placeholder named `data_record`, which is created as follows (Line 100). The code indicates that we will record 2 values for each trial, which is the single feature of the stimulus and the associated response.  
 <div align="center">
