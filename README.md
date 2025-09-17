@@ -71,7 +71,7 @@ The first step is to initialize a GP regressor for the experiment using `GPRInst
 
 In GP regression, a kernel (also called a covariance function) defines how similar two input points are, which in turn determines the shape and smoothness of the function the GP can model to connect them. GPALexp supports nine types of kernels, each assigned a numerical index. Different types of kernels (e.g., RBF, Linear) represent distinct assumptions about the underlying patterns in the data. Full information on the available kernel types and their associated indices are provided in [this Wiki page](https://github.com/KAIST-PAI-lab/GPALexp/wiki/Documentation:-argsConstructor()).  
 
-The radial basis function (RBF) kernel (Index 6) predicts smooth and continuous functions while accommodating a wide variety of functional forms. This kernel is well suited for GPAL’s purpose of exploratory modeling unless the user has strong prior assumptions about the underlying pattern (e.g., linear function). The following code shows how to define an RBF kernel using `argsConstructor()`.
+The radial basis function (RBF) kernel (Index 6) predicts smooth and continuous functions while accommodating a wide variety of functional forms. This kernel is well suited for GPAL’s purpose of exploratory modeling unless the user has strong prior assumptions about the underlying pattern (e.g., linear function). The following code shows how to define an RBF kernel using `argsConstructor()`.  
 <div align="center">
 
 ```
