@@ -48,7 +48,25 @@ The tutorial experiment code was implemented using PsychoPy [[link]](https://www
 ```
 pip install psychopy==2025.1.1
 ```  
-Note that additional dependencies, such as a compatible C++ compiler (e.g., Microsoft C++ Build Tools), may be required depending on the system configuration.
+Note that additional dependencies, such as a compatible C++ compiler (e.g., Microsoft C++ Build Tools), may be required depending on the system configuration.  
+
+## Package Structure
+GPALexp has two core functions: `GPRInstance()` and `gpal_optimize()`. `GPRInstance()` initializes a Gaussian process regressor object for performing Gaussian process regression. `gpal_optimize()` fits the regressor object to participant data and selects the optimal stimulus for presentation on the next trial. Users can customize the properties of GPAL using a third, helper function `argsConstructor()`, described below. Include the following line of code near the beginning of your Python script where imports are declared.  
+```
+from gpalexp import GPRInstance, gpal_optimize, argsConstructor
+```
+Additional details on the files and functions included in the package are provided in [the corresponding Wiki page](https://github.com/KAIST-PAI-lab/GPALexp/wiki/Descriptions-of-internal-files-of-GPALexp).  
+
+## Usage Guide
+The repository also contains the PsychoPy script to run the number-line task experiment above. The summary code below contains the most important parts, with line numbers corresponding to those in `gpal_nlt.py`.  
+
+<div align="center">
+<img width="600" height="700" alt="image" src="https://github.com/user-attachments/assets/aecafb05-c957-463d-af62-0c01cf7f3691" />
+</div>
+
+
+
+
 
 ## GPALexp Wiki
 We've provided explanatory materials in the github Wiki of this repository.  
