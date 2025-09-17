@@ -71,9 +71,13 @@ In GP regression, a kernel (also called a covariance function) defines how simil
 
 The radial basis function (RBF) kernel (Index 6) predicts smooth and continuous functions while accommodating a wide variety of functional forms. This kernel is well suited for GPAL’s purpose of exploratory modeling unless the user has strong prior assumptions about the underlying pattern (e.g., linear function). The following code shows how to define an RBF kernel using `argsConstructor()`.  
 
-<pre align="center"><code>
+<div align="center">
+
+```
 kernel_type, kernel_param = argsConstructor([6], [[1.0, (1e-5, 1e5)]])
-</code></pre>  
+```
+
+</div>  
 
 The two inputs to `argConstructor()` specify the kernel type and its hyperparameters. The first input `[6]` is the numerical index of the RBF kernel. The second input `[[1.0, (1e-5, 1e5)]]` specifies the initial value (1.0) and the range ((1e-5, 1e5)) of the kernel’s hyperparameter. In the RBF kernel, the hyperparameter is called `length_scale`, which determines the smoothness of the function. The larger the `length_scale`, the smoother the estimated function. If the second input is omitted, the function applies the default values, which are quite suitable in most cases.  
 
