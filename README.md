@@ -60,7 +60,8 @@ Additional details on the files and functions included in the package are provid
 ## Usage Guide
 The repository also contains the PsychoPy script to run the number-line task experiment above. The summary code below contains the most important parts, with line numbers corresponding to those in `gpal_nlt.py`.  
 
-<div align="center"><img width="600" height="700" alt="image" src="https://github.com/user-attachments/assets/aecafb05-c957-463d-af62-0c01cf7f3691</div>    
+<div align="center"><img width="600" height="700" alt="image" src="https://github.com/user-attachments/assets/be173a42-66c9-4bb7-a01a-ce130a9b4838" /></div>
+   
 
 <br>
 
