@@ -18,18 +18,37 @@ This will help us effectively discover underlying functions of individual data i
 - **Adaptive Design Selection with internal functions:** `GPRInstance()`, `argsConstructor()`, and `gpal_optimize()`
 - **Various built-in plotting functions for visualization**
 - **Supports GPAL optimization for arbitrary number of feature stimuli**
-- **Example code for 1D GPAL optimization with 1D Number-Line Task** (Lee et al., 2022)
+- **Example code for 1D GPAL optimization with 1D Number-Line Task** (Lee et al., 2022)  
+<br>
 
-## Installation
-GPALexp is built upon Python 3.10.18 and other libraries including numpy, pandas, scipy, and scikit-learn.  
-Note that the only thing requried in advance is Python 3.10, since other libraries will automatically be installed during the installation process.
+# Tutorial  
+This tutorial is written for the researcher who wishes to use GPAL in experiments, providing practical guidance on implementation and data analysis and evaluation. It assumes a working knowledge of Python programming and provides a step-by-step guide for embedding GPAL in code using GPALexp to reduce the programming required to a few function calls. Technical details on the implementation are provided in [GPALexp Wiki](https://github.com/KAIST-PAI-lab/GPALexp/wiki)
+
+## Installation  
+
+GPALexp is built upon Python 3.10.18, so Python 3.10 is recommended. The Anaconda distribution of Python [[link]](https://www.anaconda.com) can help us create a virtual environment for GPALexp, avoiding potential conflicts and providing tailored dependencies.  
+
+Install GPALexp from the Python Package Index (PyPI) via the following pip command in a terminal (or Command Prompt on Windows).
 ```
 # Installing from PyPI
 pip install gpalexp
-
-# Installing directly from github (developmental version)
-TBD
+```  
+Or we can install the developmental version directly from this github repository.  
 ```
+# Installing directly from github
+TBD
+```  
+To confirm successful installation of GPALexp, run the following command in a terminal.
+```
+python -m pip show gpalexp
+```  
+The above command will display the current version of GPALexp if it is installed correctly.  
+
+The tutorial experiment code was implemented using PsychoPy [[link]](https://www.psychopy.org/). To reproduce and execute the code, users must install PsychoPy version 2025.1.1, which can be installed via the following command:  
+```
+pip install psychopy==2025.1.1
+```  
+Note that additional dependencies, such as a compatible C++ compiler (e.g., Microsoft C++ Build Tools), may be required depending on the system configuration.
 
 ## GPALexp Wiki
 We've provided explanatory materials in the github Wiki of this repository.  
