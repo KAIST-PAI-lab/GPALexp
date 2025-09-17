@@ -102,7 +102,7 @@ The list `[0, 6, 8]` passed as a first argument specifies the indices of the ker
 ## Step 1. Set up the experiment and run the first trial  
 Before starting the experiment, lines 81 and 82 in `gpal_nlt.py` set the number of trials (`num_trials`) and number of stimulus features (`num_features`) in the experiment. These values should be modified depending on the task being used. The current number-line task consists of 20 trials with a single stimulus feature: the number of dots in the central box (i.e., `given number`; see Figure 1a). This stimulus feature is what GPAL selects on each trial. For more complex tasks, GPALexp supports optimization with multiple stimulus features. An example can be found in [this wiki page](https://github.com/KAIST-PAI-lab/GPALexp/wiki/Example:-2D-GPAL-optimization,-with-the-2D-number-line-task.).
 
-Because GPAL requires participant responses to guide stimulus selection, the first trial is initialized with a randomly chosen stimulus as follows (Lines 131-134):  
+Because GPAL requires participant responses to guide stimulus selection, the first trial is initialized with a randomly chosen stimulus as follows (Lines 131-134).
 
 <div align="center">
 
@@ -135,7 +135,7 @@ data_record = np.zeros((num_trials, 2)
 
 </div>  
 
-The data from the first trial are stored in the first row of the data_record. The trial index (`trial_idx`), which is 0 on the first trial, specifies the row in which to store the data (Lines 153-154):    
+The data from the first trial are stored in the first row of the data_record. The trial index (`trial_idx`), which is 0 on the first trial, specifies the row in which to store the data (Lines 153-154).
 
 <div align="center">  
 
