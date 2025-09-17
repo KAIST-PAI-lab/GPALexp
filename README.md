@@ -38,7 +38,7 @@ Or we can install the developmental version directly from this github repository
 # Installing directly from github
 TBD
 ```  
-To confirm successful installation of GPALexp, run the following command in a terminal.
+To confirm successful installation of GPALexp, run the following command in a terminal.  
 ```
 python -m pip show gpalexp
 ```  
@@ -62,7 +62,6 @@ The repository also contains the PsychoPy script to run the number-line task exp
 
 <div align="center"><img width="600" height="700" alt="image" src="https://github.com/user-attachments/assets/be173a42-66c9-4bb7-a01a-ce130a9b4838" /></div>
    
-
 <br>
 
 ## Step 0. Initialize a GP Regressor  
@@ -87,7 +86,7 @@ GPALexp supports combining multiple kernels, providing additional flexibility in
 <div align="center">
 
 ```
-kernel_type, kernel_param = argsConstructor([0,6,8], [[1.0, (1e-5, 1e5)], [1, (1e-5, 1e5)], [0.01, (1e-5, 1e5)]])
+kernel_type, kernel_param = argsConstructor([0,6,8], [[1.0, (1e-5, 1e5)], [1.0, (1e-5, 1e5)], [0.01, (1e-5, 1e5)]])
 kernel, gpr = GPRInstance(kernel_type, kernel_param, ‘k1*k2+k3’)
 ```
 
@@ -99,7 +98,7 @@ The list `[0, 6, 8]` passed as a first argument specifies the indices of the ker
 ## Step 1. Set up the experiment and run the first trial  
 Before starting the experiment, lines 81 and 82 in `gpal_nlt.py` set the number of trials (`num_trials`) and number of stimulus features (`num_features`) in the experiment. These values should be modified depending on the task being used. The current number-line task consists of 20 trials with a single stimulus feature: the number of dots in the central box (i.e., `given number`; see Figure 1a). This stimulus feature is what GPAL selects on each trial. For more complex tasks, GPALexp supports optimization with multiple stimulus features. An example can be found in [this wiki page](https://github.com/KAIST-PAI-lab/GPALexp/wiki/Example:-2D-GPAL-optimization,-with-the-2D-number-line-task.).
 
-Because GPAL requires participant responses to guide stimulus selection, the first trial is initialized with a randomly chosen stimulus as follows (Lines 131-134).
+Because GPAL requires participant responses to guide stimulus selection, the first trial is initialized with a randomly chosen stimulus as follows (Lines 131-134).  
 
 <div align="center">
 
