@@ -75,13 +75,13 @@ In GP regression, a kernel (also called a covariance function) defines how simil
 
 The radial basis function (RBF) kernel (Index 6) predicts smooth and continuous functions while accommodating a wide variety of functional forms. This kernel is well suited for GPAL’s purpose of exploratory modeling unless the user has strong prior assumptions about the underlying pattern (e.g., linear function). The following code shows how to define an RBF kernel using `argsConstructor()`.  
 
-<p align="center">
+<div align="center">
 
 ```
 kernel_type, kernel_param = argsConstructor([6], [[1.0, (1e-5, 1e5)]])
 ```
 
-</p>  
+</div>  
 
 The two inputs to `argConstructor()` specify the kernel type and its hyperparameters. The first input `[6]` is the numerical index of the RBF kernel. The second input `[[1.0, (1e-5, 1e5)]]` specifies the initial value (1.0) and the range (1e-5, 1e5) of the kernel’s hyperparameter. In the RBF kernel, the hyperparameter is called `length_scale`, which determines the smoothness of the function. The larger the `length_scale`, the smoother the estimated function. If the second input is omitted, the function applies the default values, which are quite suitable in most cases.  
 
@@ -117,7 +117,7 @@ The variable `stimulus_list` specifies the full set of candidate stimuli. In thi
 
 The selected stimulus is then passed to `show_and_get_response()`, which is a task-specific function that displays the stimulus and records the participant’s response (Line 143). This function should be customized for each task using PsychoPy or an equivalent experimental software.  
 
-<div align="center">
+<div align="center">  
 
 ```
 response = show_and_get_response(initial_stimulus, visuals, max_number, …)
@@ -127,7 +127,7 @@ response = show_and_get_response(initial_stimulus, visuals, max_number, …)
 
 After obtaining the participant’s response, the selected stimulus and the corresponding response are stored in a placeholder named `data_record`, which is created as follows (Line 100). The code indicates that we will record 2 values for each trial, which is the single feature of the stimulus and the associated response.  
 
-<div align="center">
+<div align="center">  
   
 ```
 data_record = np.zeros((num_trials, 2)
@@ -137,7 +137,7 @@ data_record = np.zeros((num_trials, 2)
 
 The data from the first trial are stored in the first row of the data_record. The trial index (`trial_idx`), which is 0 on the first trial, specifies the row in which to store the data (Lines 153-154):    
 
-<div align="center">
+<div align="center">  
 
 ```
 data_record[trial_idx][0] = initial_stimulus
@@ -153,7 +153,7 @@ data_record[trial_idx][1] = response
 
 Once the response from the participant is observed, `gpal_optimize()` function performs GPAL optimization (Line 172). It fits a GP regressor to the observed data, estimates the uncertainty of the responses to the stimulus candidates, and selects the stimulus with the highest uncertainty for the next trial. The function uses objects `gpr`, `stimuli`, and `num_features` specified in Step 0, and `data_record` explained in Step 1 as inputs. Note that the function uses only a subset of `data_record` up to the current trial (`data_record[:trial_idx]`), because placeholders for unobserved trials are filled with zeros.  
 
-<div align="center">
+<div align="center">  
 
 ```
 result, gp_mean, gp_std, lml = gpal_optimize(gpr, num_features, data_record[:trial_idx], stimuli)
