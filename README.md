@@ -77,7 +77,9 @@ The radial basis function (RBF) kernel (Index 6) predicts smooth and continuous 
 
 <div align="center">
 
-<code>kernel_type, kernel_param = argsConstructor([6], [[1.0, (1e-5, 1e5)]])</code>
+```
+kernel_type, kernel_param = argsConstructor([6], [[1.0, (1e-5, 1e5)]])
+```
 
 </div>  
 
@@ -85,14 +87,14 @@ The two inputs to `argConstructor()` specify the kernel type and its hyperparame
 
 GPALexp supports combining multiple kernels, providing additional flexibility in model formulation. In practice, a Gaussian process represented by a single kernel can be restrictive. It is common to employ compounded kernels to capture more complex patterns in the data. In this tutorial, we used a product of a constant kernel (index 0) and a RBF kernel (index 6), combined with a Gaussian noise kernel (index 8).   
 
-<p align="center">
+<div align="center">
 
 ```
 kernel_type, kernel_param = argsConstructor([0,6,8], [[2.5, (1e-5, 1e5)], [1, (1e-5, 1e5)], [0.01, (1e-5, 1e5)]])
 kernel, gpr = GPRInstance(kernel_type, kernel_param, ‘k1*k2+k3’)
 ```
 
-</p>  
+</div>  
 
 The list `[0, 6, 8]` passed as a first argument specifies the indices of the kernels to be combined, with the subsequent list defining the hyperparameter configuration associated with each kernel. The kernel specified by `argsConstructor()` is then passed to `GPRInstance()`, with an additional input that defines the kernel composition. In the present example, the expression `‘k1*k2+k3’` indicates that the constant kernel (`k1`, index 0) is multiplied with the RBF kernel (`k2`, index 6), and  the Gaussian noise kernel (`k3`, index 8) is then added to the resulting product. In this formulation, the constant kernel serves as a global scaling parameter, the RBF kernel captures smooth functional relationships with flexibility, and the noise kernel models stochastic variability in the observed responses.   
 <br>
