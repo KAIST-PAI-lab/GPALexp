@@ -13,7 +13,7 @@ This is beneficial in the sense that it spends relatively less resources while m
 
 Therefore, GPAL enables us to optimize experimental stimuli and obtain maximal information regarding each participant, in the most efficient way. 
 
-GPAL can be adopted not only in psychological experiments but in learning and optimization in various domains as well, including manifolds, dynamics, and computer vision.  
+GPAL can be adopted not only in psychological experiments but in various domains as well, including manifold learning, dynamics learning, object detection, and others.  
 
 ## What are the benefits of using GPALexp?
 GPALexp built-in functions can readily be incorporated in existing Python experiment codes, thereby efficiently capture varying patterns of individual data.
