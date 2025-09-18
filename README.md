@@ -2,9 +2,18 @@
 GPALexp is a Python package implementation of Gaussian Process Active Learning (GPAL, Chang et al., 2021).  
 
 ## What is GPAL?
-GPAL is a nonparametric Bayesian optimization technique that can approximate a wide range of underlying continuous functions.  
+GPAL is a nonparametric Bayesian optimization technique that can approximate a wide range of underlying continuous functions. 
 
-GPAL enables us to optimize experimental stimuli and obtain maximal information regarding each participant, in the most efficient way.  
+
+It is considered as an active learning algorithm, since the algorithm itself adaptively selects the data to learn in subsequent learning steps (in contrast to conventional passive learning).    
+
+
+This is beneficial in the sense that it spends relatively less resources while maintaining comparable performances.  
+<br>
+
+Therefore, GPAL enables us to optimize experimental stimuli and obtain maximal information regarding each participant, in the most efficient way. 
+
+GPAL can be adopted not only in psychological experiments but in learning and optimization in various domains as well, including manifolds, dynamics, and computer vision.  
 
 ## What are the benefits of using GPALexp?
 GPALexp built-in functions can readily be incorporated in existing Python experiment codes, thereby efficiently capture varying patterns of individual data.
