@@ -6,9 +6,9 @@ GPAL is a nonparametric Bayesian optimization technique that can approximate a w
 
 
 It is an active learning algorithm because the algorithm adaptively selects, based on an objective meatures, the data to learn in each iteration of function estimation. 
-~~~
+```
 learning steps (in contrast to conventional passive learning, where the model is given with the data to learn without any spontaneous control on them).    
-~~~
+```
 
 This is beneficial in the sense that it spends relatively less resources while maintaining comparable performances.  
 <br>
