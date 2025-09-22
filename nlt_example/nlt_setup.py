@@ -146,6 +146,8 @@ def show_and_get_response(number, visuals, max_number, size_control=False):
 
     if isinstance(number, float):
         number=int(number)
+    if isinstance(number, np.ndarray):
+        number=number[0].item()
     if isinstance(max_number, float):
         max_number=int(max_number)
     if size_control:

@@ -47,7 +47,7 @@ Defining a Gaussian process regressor (GPR) object.
 ## NOTE: It is sufficient to write only the values we are putting to argsConsturctor(),
 ##       But for guidance, we've specified both the values that argsConstructor() should take
 ##       and those we've loaded and putting into the function. 
-kernel_type, kernel_args = argsConstructor([0,6,8], [[1.0], [1.0], [0.01]])
+kernel_type, kernel_args = argsConstructor([0,6,8], [[2.5], [1.0], [0.01]])
 
 
 '''
@@ -125,13 +125,10 @@ Running the first trial.
 ## we just set it as a random number among (5, 10, 15, ... , 495, 500)
 ## pMean, pStd, lml are GPAL-related statistics, which cannot be calculated in the first trial.
 ## Therefore we've just initialized them with simple values.
-start_val=5
-end_val=500
-interval=5
-stimuli=sequence_with_interval(start_val, end_val, interval)
+stimulus_list=sequence_with_interval(5, 500, 5)
 
 trial_index=0
-initial_stimulus=np.random.choice(stimuli.squeeze())
+initial_stimulus=np.random.choice(stimulus_list, size=1)
 gp_mean = 0
 gp_std = 1
 lml = 0
