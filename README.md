@@ -32,8 +32,12 @@ This will help us effectively discover underlying functions of individual data i
 - **Adaptive Design Selection with internal functions:** `GPRInstance()`, `argsConstructor()`, and `gpal_optimize()`
 - **Various built-in plotting functions for visualization**
 - **Supports GPAL optimization for arbitrary number of feature stimuli**
-- **Example code for 1D GPAL optimization with 1D Number-Line Task** (Lee et al., 2022)  
 <br>
+
+# Example Code  
+We've implemented an example code file for applying GPALexp into existing experiment code files. This example shows how to apply GPALexp package in 1-dimensional number line task (Lee et al., 2022) example.   
+
+The compressed version can be downloaded in this [link](). Please unzip the file and execute gpal_nlt.py for an example scenario. Note that our step-by-step guide in the main text is based on gpal_nlt.py, and we provide detailed comments and guidelines through the whole code file.  
 
 # Tutorial  
 This tutorial is written for the researcher who wishes to use GPAL in experiments, providing practical guidance on implementation and data analysis and evaluation. It assumes a working knowledge of Python programming and provides a step-by-step guide for embedding GPAL in code using GPALexp to reduce the programming required to a few function calls. Technical details on the implementation are provided in [GPALexp Wiki](https://github.com/KAIST-PAI-lab/GPALexp/wiki)
@@ -152,5 +156,13 @@ The main output is `result` , which contains the stimulus (`given_number` in the
 We've provided explanatory materials in the github Wiki of this repository.  
 Please refer to this [Wiki page](https://github.com/KAIST-PAI-lab/GPALexp/wiki) for further details.  
 
+## For Linux and Mac OS  
+All functions defined inside src/gpalexp directory works properly, regardless of OS types.  
+However, the example experiment code in the downloaded file (nlt_example.zip) only supports Windows OS.  
+This is due to the compatibility with the experiment-related functions supported by PsychoPy package.  
+We've tried to specify appropriate dependencies to make it executable in Linux, but we were not able to.  
+For Mac OS, we haven't tested nlt_example.zip in Mac OS setting.  
+Therefore, please note that the provided code example is likely to produce an error if it was not executed in Windows.  
+
 ## Contacts
-If there are any things that the maintainer should be noticed (bug reports, update requests, questions, future suggestions, etc), please feel free to contact Junyup Kim (ytrewq271828@alumni.kaist.ac.kr).
+If there are any things that the maintainer should be noticed (bug reports, update requests, questions, future suggestions, etc), please feel free to contact Junyup Kim (ytrewq271828@kaist.ac.kr).
