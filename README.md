@@ -150,7 +150,9 @@ We've provided explanatory materials in the github Wiki of this repository.
 Please refer to this [Wiki page](https://github.com/KAIST-PAI-lab/GPALexp/wiki) for further details.  
 
 ## For Linux and Mac OS  
-All functions defined inside `src/gpalexp` directory works properly, regardless of OS types. However, the example experiment code in the downloaded file (`nlt_example.zip`) only supports Windows OS. This is due to the compatibility with the experiment-related functions supported by PsychoPy package. We've tried to specify appropriate dependencies to make it executable in Linux, but we were not able to. For Mac OS, we haven't tested `nlt_example.zip` in Mac OS setting. Therefore, please note that the provided code example is likely to produce an error if not executed in Windows.  
+All functions defined inside `src/gpalexp` directory works properly, regardless of OS types. However, the example experiment code in the downloaded file (`nlt_example.zip`) does not support Linux OS. This is due to the compatibility with the experiment-related functions supported by PsychoPy package. We've tried to specify appropriate dependencies to make it executable in Linux, but we were not able to. Therefore, please note that there might be unexpected outcomes when running `nlt_example/gpal_nlt.py` in Linux-based OS (e.g. CentOS, Ubuntu, ...)
+
+For Mac OS, we've tested the example experiment code file and confirmed it running without any problems.
 
 ## Contacts
 If there are any things that the maintainer should be noticed (bug reports, update requests, questions, future suggestions, etc), please feel free to contact Junyup Kim (ytrewq271828@kaist.ac.kr).
