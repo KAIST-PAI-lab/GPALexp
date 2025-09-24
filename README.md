@@ -47,7 +47,7 @@ pip install gpalexp
 Or we can install the developmental version directly from this github repository.  
 ```
 # Installing directly from github
-TBD
+pip install git+https://github.com/KAIST-PAI-lab/GPALexp.git@main
 ```  
 To confirm successful installation of GPALexp, run the following command in a terminal.  
 ```
