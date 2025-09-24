@@ -383,7 +383,7 @@ def sequence_with_interval(start_val: int|float, end_val: int|float, interval:in
     if (end_val - start_val)*interval<0:
         raise ValueError(f"Wrong signs; the sequence starts from {start_val} to {end_val}, with an interval of {interval}.")
 
-    return np.arange(start_val, end_val, interval, dtype=float).reshape(-1, 1)
+    return np.linspace(start_val, end_val, np.floor((end_val-start_val)/interval)+1)
 
 def grid_with_sequences(*sequences):
     for seq in sequences:
