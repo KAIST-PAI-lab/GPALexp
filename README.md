@@ -30,7 +30,7 @@ This will help us effectively discover underlying functions of individual data i
 # Example Code  
 We've implemented an example code file for applying GPALexp into existing experiment code files. This example shows how to apply GPALexp package in 1-dimensional number line task (Lee et al., 2022) example.   
 
-The compressed version can be downloaded in this [link](). Please unzip the file and execute gpal_nlt.py for an example scenario. Note that our step-by-step guide in the main text is based on gpal_nlt.py, and we provide detailed comments and guidelines through the whole code file.  
+The compressed version can be downloaded in this [link](https://github.com/KAIST-PAI-lab/GPALexp/releases/latest/download/nlt_example.zip). Please unzip the file and execute gpal_nlt.py for an example scenario. Note that our step-by-step guide in the main text is based on gpal_nlt.py, and we provide detailed comments and guidelines through the whole code file.  
 
 # Tutorial  
 This tutorial is written for the researcher who wishes to use GPAL in experiments, providing practical guidance on implementation and data analysis and evaluation. It assumes a working knowledge of Python programming and provides a step-by-step guide for embedding GPAL in code using GPALexp to reduce the programming required to a few function calls. Technical details on the implementation are provided in [GPALexp Wiki](https://github.com/KAIST-PAI-lab/GPALexp/wiki)
