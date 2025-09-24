@@ -1,8 +1,8 @@
 [project]
 name = "GPALexp"
-version = "0.1.6"
+version = "0.1.6.5"
 authors = [
-    {name="Junyup Kim", email="ytrewq271828@alumni.kaist.ac.kr"},
+    {name="Junyup Kim", email="ytrewq271828@kaist.ac.kr"},
     {name="Chaeho Lee", email="ch.chell39@gmail.com"},
     {name="Boyoung Kwon", email="bykwon@kaist.ac.kr"},
     {name="Sangho Lee", email="sangholee@kaist.ac.kr"},

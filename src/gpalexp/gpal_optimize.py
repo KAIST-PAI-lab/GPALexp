@@ -33,9 +33,9 @@ def gpal_optimize(gpr:GaussianProcessRegressor,
         raise TypeError(f"stimulus_candidates should be a numpy array, got the type of {type(stimulus_candidates).__name__}.")
     if stimulus_candidates.dtype!=np.floating:
         raise TypeError(f"stimulus_candidates should have the float dtype, got the dtype of {stimulus_candidates.dtype}.")
-    if stimulus_candidates.ndim!=2:
+    if stimulus_candidates.ndim>2 or stimulus_candidates.ndim==0:
         raise ValueError(f"stimulus_candidates should be a 2D array, got {stimulus_candidates.ndim} dimensions.")
-    if stimulus_candidates.shape[1]!=num_features:
+    if stimulus_candidates.ndim>1 and stimulus_candidates.shape[1]!=num_features:
         raise ValueError(f"stimulus_candidates should have {num_features} columns, got {stimulus_candidates.shape[1]}.")
     if stimulus_masking_function is not None:
         if not callable(stimulus_masking_function):
@@ -48,6 +48,8 @@ def gpal_optimize(gpr:GaussianProcessRegressor,
     if not isinstance(return_covar, bool):
         raise TypeError(f"return_covar should be a bool value, got the type of {type(return_covar).__name__}.")    
 
+    if stimulus_candidates.ndim==1:
+        stimulus_candidates=stimulus_candidates.reshape(-1,1)
 
     if stimulus_masking_function is None:
         predict_candidates_X=stimulus_candidates
