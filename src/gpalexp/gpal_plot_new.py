@@ -1,23 +1,12 @@
-import os
-import random
-import warnings
 from typing import Optional, Tuple
 
-import matplotlib.cm as cm
 import matplotlib.pyplot as plt
 import numpy as np
-import numpy.typing as npt
 import pandas as pd
-import yaml
-from matplotlib.ticker import FormatStrFormatter, MultipleLocator
-from mpl_toolkits.mplot3d.axes3d import Axes3D
-from psychopy import event, logging
+from matplotlib.ticker import MultipleLocator
 from sklearn.gaussian_process import GaussianProcessRegressor
 from sklearn.metrics import mean_squared_error
 
-from gpal_optimize import gpal_optimize
-from gpr_instance import GPRInstance
-from utils import argsConstructor, sequence_with_interval
 
 
 def plot_GP(gp_regressor: GaussianProcessRegressor, 
@@ -27,6 +16,7 @@ def plot_GP(gp_regressor: GaussianProcessRegressor,
             x_num: int = 100, 
             column_names_specified:Optional[list[str]] = None, 
             trial_numbers_specified:Optional[list[int]] = None,
+            figure_size: Tuple[int, int] = (6,5),
             sigma_coefficient: float = 1.0):
     
     if not isinstance(gp_regressor, GaussianProcessRegressor):
@@ -73,6 +63,12 @@ def plot_GP(gp_regressor: GaussianProcessRegressor,
             raise TypeError(f"trial_numbers_specified should only contain string elements.") 
         if not all([tn <= dataframe.shape[0] for tn in trial_numbers_specified]):
             raise ValueError(f"trial_numbers_specified should not contain values larger than {dataframe.shape[0]}.")
+    if not isinstance(figure_size, Tuple):
+        raise TypeError(f"figure_size should be a Tuple, got the type of {type(figure_size).__name__}.")
+    if len(figure_size)!=2:
+        raise ValueError(f"figure_size should have 2 elements, got {len(figure_size)} elements.")
+    if not all([isinstance(fs, int) for fs in figure_size]):
+        raise TypeError(f"figure_size should only contain int values.")
     if not isinstance(sigma_coefficient, float):
         raise TypeError(f"sigma_coefficient should be a float value, got the type of {type(sigma_coefficient).__name__}.")       
 
@@ -115,8 +111,9 @@ def plot_GP(gp_regressor: GaussianProcessRegressor,
         number_subplots = 1
     else:
         number_subplots = len(trial_numbers_specified)
+        figure_size = (6, 5*number_subplots)
 
-    figure, axes = plt.subplots(number_subplots, 1, figsize=(6, 5 * number_subplots))
+    figure, axes = plt.subplots(number_subplots, 1, figsize=figure_size)
 
     if trial_numbers_specified is not None:
         if len(trial_numbers_specified) == 1:
@@ -270,8 +267,9 @@ def plot_GP(gp_regressor: GaussianProcessRegressor,
 def plot_selection_frequency(
     dataframe: pd.DataFrame,
     bins: int = 10,
-    x_range: Optional[Tuple[float, float]] = None,
+    val_range: Tuple[float, float] = (0.0, 500.0),
     column_names_specified: Optional[str] = None,
+    figure_size: Tuple[int, int] = (10,5), 
     mode: str = 'sum'
 ):
     if not isinstance(dataframe, pd.DataFrame):
@@ -280,19 +278,24 @@ def plot_selection_frequency(
         raise TypeError(f"bins should be an integer value, got the type of {type(bins).__name__}.")
     if not bins>0:
         raise ValueError(f"bins should be a positive integer, got {bins}.")
-    if x_range is not None:
-        if not isinstance(x_range, Tuple):
-            raise TypeError(f"x_range should be a Tuple, got the type of {type(x_range).__name__}.")
-        else:
-            if len(x_range)!=2:
-                raise ValueError(f"x_range should have 2 elements, got {len(x_range)} elements.")
-        if not all([isinstance(r, float) for r in x_range]):
-            raise TypeError(f"x_range should only contain float values.")
-        if x_range[0] >= x_range[1]:
-            raise ValueError(f"x_range[1] should be larger than x_range[0].")
+    if not isinstance(val_range, Tuple):
+        raise TypeError(f"val_range should be a Tuple, got the type of {type(val_range).__name__}.")
+    else:
+        if len(val_range)!=2:
+            raise ValueError(f"val_range should have 2 elements, got {len(val_range)} elements.")
+    if not all([isinstance(r, float) for r in val_range]):
+        raise TypeError(f"val_range should only contain float values.")
+    if val_range[0] >= val_range[1]:
+        raise ValueError(f"val_range[1] should be larger than val_range[0].")
     if column_names_specified is not None:
         if not isinstance(column_names_specified, str):
             raise TypeError(f"column_names_specified should be a string value, got the type of {type(column_names_specified).__name__}.")
+    if not isinstance(figure_size, Tuple):
+        raise TypeError(f"figure_size should be a Tuple, got the type of {type(figure_size).__name__}.")
+    if len(figure_size)!=2:
+        raise ValueError(f"figure_size should have 2 elements, got {len(figure_size)} elements.")
+    if not all([isinstance(fs, int) for fs in figure_size]):
+        raise TypeError(f"figure_size should only contain int values.")
     if not isinstance(mode, str):
         raise TypeError(f"mode should be a string value, got the type of {type(mode).__name__}.")
     if mode not in ['sum', 'average']:
@@ -301,7 +304,7 @@ def plot_selection_frequency(
     if column_names_specified is not None:
         print(f"The columns included in dataframe: {list(dataframe.columns)}.")
 
-        x_data_points = dataframe[column_names_specified].to_numpy()
+        target_data_points = dataframe[column_names_specified].to_numpy()
         
         '''
         n_names_specified = len(column_names_specified)
@@ -328,26 +331,27 @@ def plot_selection_frequency(
             z_data_points = dataframe[z_column_name].tolist()
         '''
     else:
-        x_data_points = dataframe.iloc[:, 0].to_numpy()
+        target_data_points = dataframe.iloc[:, 0].to_numpy()
         '''
         y_data_points = dataframe.iloc[:, 1].tolist()
         '''
     
-    fig_size = (10, 5)
-    figure=plt.figure(figsize=fig_size)
+    figure=plt.figure(figsize=figure_size)
     ax= figure.add_subplot(1,1,1)
 
-    if x_range is not None:
-        mask_range = lambda x: x >= x_range[0] and x <= x_range[1]
-        mask_idx = mask_range(x_data_points)
-        x_data_points=x_data_points[mask_idx]
+    mask_range = lambda v: v >= val_range[0] and v <= val_range[1]
+    mask_binary = np.array([mask_range(val) for val in target_data_points])
+    target_data_points=target_data_points[mask_binary]
 
-    hist, dv1_pos=np.histogram(x_data_points, bins=bins)
-    
+    hist, dv1_pos=np.histogram(target_data_points, bins=bins, range=val_range)
+    print(dv1_pos)
     if mode=='average':
-        hist=hist/len(x_data_points)    ## Determining the width of each bar in the figure.
+        hist=hist/len(target_data_points)    ## Determining the width of each bar in the figure.
 
-    bin_width = (x_range[1] - x_range[0]) / bins if x_range else dv1_pos[1] - dv1_pos[0]
+    if val_range is not None:
+        bin_width = (val_range[1] - val_range[0])/bins
+    else:
+        bin_width = (dv1_pos[-1] - dv1_pos[0])/bins
 
     bin_centers = dv1_pos[:-1] + bin_width / 2
     
@@ -412,8 +416,8 @@ def plot_convergence(gp_regressor: GaussianProcessRegressor,
         raise TypeError(f"figure_size should be a Tuple, got the type of {type(figure_size).__name__}.")
     if len(figure_size)!=2:
         raise ValueError(f"figure_size should have 2 elements, got {len(figure_size)} elements.")
-    if not all([isinstance(fs, float) for fs in figure_size]):
-        raise TypeError(f"figure_size should only contain float values.")
+    if not all([isinstance(fs, int) for fs in figure_size]):
+        raise TypeError(f"figure_size should only contain int values.")
      
     if column_names_specified is not None:
         if not isinstance(column_names_specified, list):
@@ -524,161 +528,6 @@ def plot_convergence(gp_regressor: GaussianProcessRegressor,
     axes[1].grid(True, alpha=0.3)
 
     figure.tight_layout()
-    figure.suptitle("Convergence Plot", fontsize=16, y=1.03)
+    figure.suptitle("Convergence Plot", fontsize=16)
 
     return figure, axes, mse_values
-
-
-
-
-def plot_convergence_and_frequency(gp_regressor: GaussianProcessRegressor, dataframe: pd.DataFrame, bins = 10, x_range_arg = (), y_range=(), column_names_specified:tuple=(), figure_size=(10, 20), function_colors=["lightgreen", "lightblue", "mediumpurple", "black"]):
-    if not isinstance(dataframe, pd.DataFrame):
-        raise TypeError(f"Expected pandas.DataFrame, got {type(dataframe)}")
-
-    # Get the datapoints from the df
-    if column_names_specified:
-        n_names_specified = len(column_names_specified)
-
-        if n_names_specified == 2:
-            x_column_name, y_column_name = column_names_specified
-
-            # If the specified column names can't be searched on the dataframe, raise ValueError
-            missing_columns = [col for col in column_names_specified if col not in dataframe.columns]
-            if missing_columns:
-                raise ValueError(f"Specified column names {missing_columns} not found in the dataframe")
-            
-            x_data_points = dataframe[x_column_name].tolist()
-            y_data_points = dataframe[y_column_name].tolist()
-
-        elif n_names_specified == 3:
-            x_column_name, y_column_name, z_column_name = column_names_specified
-
-            # If the specified column namaes can't be searched on the dataframe, raise ValueError
-            missing_columns = [col for col in column_names_specified if col not in dataframe.columns]
-            if missing_columns:
-                raise ValueError(f"Specified column names {missing_columns} not found in the dataframe")
-            
-            x_data_points = dataframe[x_column_name].tolist()
-            y_data_points = dataframe[y_column_name].tolist()
-            z_data_points = dataframe[z_column_name].tolist()
-
-        else:
-            raise ValueError(f"The number of the specified columns should be either 2 or 3")
-        
-    else:
-        x_data_points = dataframe.iloc[:, 0].tolist()
-        y_data_points = dataframe.iloc[:, 1].tolist()
-
-    if not isinstance(gp_regressor, GaussianProcessRegressor):
-        raise TypeError(
-            f"gp_regressor must be sklearn.gaussian_process.GaussianProcessRegressor, "
-            f"got {type(gp_regressor).__name__}."
-        )
-    
-    if len(x_data_points) != len(y_data_points):
-        raise ValueError(
-            f"x_data_points and y_data_points must have the same length, "
-            f"got {len(x_data_points)} and {len(y_data_points)} for x and y respectively."
-        )
-
-    num_data_points = len(x_data_points)
-    
-    figure, axes = plt.subplots(3, 1, figsize=figure_size)
-    gp_mean_function_list = []
-
-    quantiles_visualize = [0.25, 0.5, 0.75, 1]
-    n_trials_visualize = []
-    for quantile in quantiles_visualize:
-        n_trials_visualize.append(int(num_data_points * quantile))
-
-    # Generate plot 1: GP mean functions visualized
-    if x_range_arg:
-        x_range_reshaped_for_gpr = np.linspace(x_range_arg[0], 
-                            x_range_arg[1], 
-                            100).reshape(-1, 1)
-    else:
-        x_range = np.linspace(min(x_data_points), 
-                            max(x_data_points), 100)
-        x_range_reshaped_for_gpr = x_range.reshape(-1, 1)
-            
-    quantile_count = 0
-    for i in range(1, num_data_points+1):
-        x_data_points_current_trial = x_data_points[:i]
-        x_data_points_reshaped_for_gpr = np.array(x_data_points_current_trial).reshape(-1, 1)
-
-        y_data_points_current_trial = y_data_points[:i]
-        y_data_points_reshaped_for_gpr = np.array(y_data_points_current_trial).reshape(-1, 1)
-        
-        gp_regressor.fit(x_data_points_reshaped_for_gpr, y_data_points_reshaped_for_gpr)
-
-        gp_mean_function = gp_regressor.predict(x_range_reshaped_for_gpr)
-
-        gp_mean_function_list.append(gp_mean_function)
-
-        if i in n_trials_visualize[:-1]:
-            current_quantile = int(quantiles_visualize[quantile_count] * 100)
-            axes[0].plot(x_range_reshaped_for_gpr.ravel(), gp_mean_function, color=function_colors[quantile_count], linewidth=2, label=f"Trial #{i} ({current_quantile}%)")
-            quantile_count += 1
-        elif i == n_trials_visualize[-1]:
-            axes[0].plot(x_range_reshaped_for_gpr.ravel(), gp_mean_function, color=function_colors[-1], linewidth=2.5, label="Final Trial")
-
-
-    # Set plot margins for better visibility
-    ymin, ymax = min(y_data_points), max(y_data_points)
-    span = ymax - ymin
-    margin = 0.1 * span
-    axes[0].set_ylim(ymin - margin, ymax + margin)
-    axes[0].set_title("Figure A: GP mean functions visualized")
-    if y_range:
-        axes[0].set_ylim(y_range[0], y_range[1])
-    axes[0].legend()
-
-    # Data points scatter
-    axes[0].scatter(x_data_points, y_data_points, c="black", edgecolor="white", zorder=3, s=30)
-
-    # Generate plot 2: MSE value between each trial and the final trial
-    mse_values = []
-    print(num_data_points)
-    print(len(gp_mean_function_list))
-    for i in range(num_data_points):
-        mse = mean_squared_error(gp_mean_function_list[i], gp_mean_function_list[-1])
-        mse_values.append(mse)
-
-    trials = np.arange(1, len(mse_values) + 1) 
-    axes[1].plot(trials, mse_values, marker='o', linewidth=2)
-    axes[1].xaxis.set_major_locator(MultipleLocator(1))
-    axes[1].set_xlim(0.5, len(mse_values)+0.5)
-    axes[1].set_xlabel("Trial")
-    axes[1].set_ylabel("MSE")
-    axes[1].set_title("Figure B: Distance to the final function")
-    axes[1].grid(True, alpha=0.3)
-
-
-    # frequency histogram
-
-    hist, dv1_pos=np.histogram(x_data_points, bins=bins)
-
-    hist=hist/len(x_data_points) 
-
-    bin_width = (x_range_arg[1] - x_range_arg[0]) / bins if x_range_arg else dv1_pos[1] - dv1_pos[0]
-
-    bin_centers = dv1_pos[:-1] + bin_width / 2
-    
-    axes[2].bar(
-        x=bin_centers,
-        height=hist.ravel(),
-        width=bin_width,
-        bottom=0,
-        align='center',
-        color='skyblue',       
-        alpha=0.6,             
-        edgecolor='black',     
-        linewidth=0.8          
-    )
-
-    axes[2].set_xlabel("Numbers")
-    axes[2].set_ylabel("Selection Frequency")
-    axes[2].set_title("Figure C: Design Selection Histogram")
-    
-    return figure, axes
-    return figure, axes
