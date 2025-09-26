@@ -80,7 +80,7 @@ def plot_GP(gp_regressor: GaussianProcessRegressor,
 
     # Get the datapoints from the dataframe
     if column_names_specified is not None:
-        print(f"The columns included in dataframe: {list(dataframe.columns)}.")
+        #print(f"The columns included in dataframe: {list(dataframe.columns)}.")
         n_names_specified = len(column_names_specified)
 
         if n_names_specified == 2:
