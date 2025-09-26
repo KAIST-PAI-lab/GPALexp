@@ -1,3 +1,4 @@
+#%%
 from typing import Optional, Tuple
 
 import matplotlib.pyplot as plt
@@ -16,8 +17,12 @@ def plot_GP(gp_regressor: GaussianProcessRegressor,
             x_num: int = 100, 
             column_names_specified:Optional[list[str]] = None, 
             trial_numbers_specified:Optional[list[int]] = None,
-            figure_size: Tuple[int, int] = (6,5),
-            sigma_coefficient: float = 1.0):
+            figure_size: Tuple[int, int] = (6,4),
+            sigma_coefficient: float = 1.0,
+            font_size_title = 20,
+            font_size_axis_label = 15,
+            x_label_name = "Stimulus",
+            y_label_name = "Response"):
     
     if not isinstance(gp_regressor, GaussianProcessRegressor):
         raise TypeError(f"gp_regressor should be a GaussianProcessRegressor object, got the type of {type(gp_regressor).__name__}.")
@@ -162,7 +167,9 @@ def plot_GP(gp_regressor: GaussianProcessRegressor,
                 fontweight="bold"
             )
 
-            axes.set_title(f"Trial #{trial_number}")
+            axes.set_title(f"Trial #{trial_number}", fontsize = font_size_title)
+            axes.set_xlabel(f"{x_label_name}", fontsize = font_size_axis_label) 
+            axes.set_ylabel(f"{y_label_name}", fontsize = font_size_axis_label) 
 
             if y_range:
                 axes.set_ylim(y_range[0], y_range[1])
@@ -177,8 +184,6 @@ def plot_GP(gp_regressor: GaussianProcessRegressor,
 
                 x_data_points_specified = x_data_points[:trial_number]
                 y_data_points_specified = y_data_points[:trial_number]
-                #print(f"Current X data points: {x_data_points_specified}")
-                #print(f"Current Y data points: {y_data_points_specified}")
 
                 x_data_points_reshaped = x_data_points_specified.reshape(-1, 1)
                 gp_regressor.fit(x_data_points_reshaped, y_data_points_specified)
@@ -203,7 +208,8 @@ def plot_GP(gp_regressor: GaussianProcessRegressor,
                                 post_mean+sigma_coefficient*post_stdev, alpha=0.3, label='Uncertainty')
 
                 max_stdev_design = x_values_predict[np.argmax(post_stdev)].item()
-            
+
+
                 axes[i].axvline(x=max_stdev_design, color='green', linestyle='--', linewidth=3)
                 axes[i].annotate(
                     f"{int(max_stdev_design)}",
@@ -216,7 +222,9 @@ def plot_GP(gp_regressor: GaussianProcessRegressor,
                     fontweight="bold"    
                 )
                 
-                axes[i].set_title(f"Trial #{trial_number}")
+                axes[i].set_title(f"Trial #{trial_number}", fontsize = font_size_title)
+                axes[i].set_xlabel(f"{x_label_name}", fontsize = font_size_axis_label) 
+                axes[i].set_ylabel(f"{y_label_name}", fontsize = font_size_axis_label) 
 
                 axes[i].legend()
                 
@@ -251,12 +259,16 @@ def plot_GP(gp_regressor: GaussianProcessRegressor,
         axes.fill_between(x_values_predict.ravel(), post_mean-sigma_coefficient*post_stdev, 
                         post_mean+sigma_coefficient*post_stdev, alpha=0.3, label='Uncertainty')
 
+        axes.set_xlabel(f"{x_label_name}", fontsize = font_size_axis_label) 
+        axes.set_ylabel(f"{y_label_name}", fontsize = font_size_axis_label) 
+
         axes.legend()
 
         if y_range:
             axes.set_ylim(y_range[0], y_range[1])
 
-    return figure, axes, gp_regressor
+    figure.tight_layout()
+    return figure, axes
 
 
 
@@ -269,8 +281,11 @@ def plot_selection_frequency(
     bins: int = 10,
     val_range: Tuple[float, float] = (0.0, 500.0),
     column_names_specified: Optional[str] = None,
-    figure_size: Tuple[int, int] = (10,5), 
-    mode: str = 'sum'
+    figure_size: Tuple[int, int] = (6, 4), 
+    mode: str = 'sum',
+    font_size_title = 20,
+    font_size_axis_label = 15,
+
 ):
     if not isinstance(dataframe, pd.DataFrame):
         raise TypeError(f"dataframe should be a Pandas DataFrame, got the type of {type(dataframe).__name__}.")
@@ -366,11 +381,16 @@ def plot_selection_frequency(
         edgecolor='black',     
         linewidth=0.8          
     )
+    ax.yaxis.set_major_locator(MultipleLocator(1))
 
-    ax.set_xlabel("Stimulus Feature")
-    ax.set_ylabel("Selection Frequency")
-    ax.set_title("Stimulus Selection Histogram")
-    
+    ax.set_xlabel("Stimulus Range", fontsize = font_size_axis_label)
+    if mode == "sum":
+        ax.set_ylabel("Selection Frequency", fontsize = font_size_axis_label)
+    elif mode == "average":
+        ax.set_ylabel("Selection Ratio", fontsize = font_size_axis_label)
+    ax.set_title("Stimulus Selection Histogram", fontsize = font_size_title)
+    figure.tight_layout()
+
     return figure, ax
 
 
@@ -381,7 +401,9 @@ def plot_convergence(gp_regressor: GaussianProcessRegressor,
                      x_num: int = 100,
                      column_names_specified: Optional[list[str]] = None, 
                      figure_size: Tuple[int, int]=(12, 4), 
-                     function_colors: list[str]=["lightgreen", "lightblue", "mediumpurple", "black"]):
+                     function_colors: list[str]=["lightgreen", "lightblue", "mediumpurple", "black"],
+                     font_size_title = 20,
+                     font_size_axis_label = 15):
     
     if not isinstance(gp_regressor, GaussianProcessRegressor):
         raise TypeError(f"gp_regressor should be a GaussianProcessRegressor object, got the type of {type(gp_regressor).__name__}.")
@@ -490,10 +512,10 @@ def plot_convergence(gp_regressor: GaussianProcessRegressor,
 
         if i in n_trials_visualize[:-1]:
             current_quantile = int(quantiles_visualize[quantile_count] * 100)
-            axes[0].plot(x_range_reshaped_for_gpr.ravel(), gp_mean_function, color=function_colors[quantile_count], linewidth=2, label=f"Trial #{i} ({current_quantile}%)")
+            axes[1].plot(x_range_reshaped_for_gpr.ravel(), gp_mean_function, color=function_colors[quantile_count], linewidth=2, label=f"Trial #{i} ({current_quantile}%)")
             quantile_count += 1
         elif i == n_trials_visualize[-1]:
-            axes[0].plot(x_range_reshaped_for_gpr.ravel(), gp_mean_function, color=function_colors[-1], linewidth=2.5, label="Final Trial")
+            axes[1].plot(x_range_reshaped_for_gpr.ravel(), gp_mean_function, color=function_colors[-1], linewidth=2.5, label="Final Trial")
 
 
     # Set plot margins for better visibility
@@ -503,12 +525,14 @@ def plot_convergence(gp_regressor: GaussianProcessRegressor,
         ymin, ymax = min(y_data_points), max(y_data_points)
     span = ymax - ymin
     margin = 0.1 * span
-    axes[0].set_ylim(ymin - margin, ymax + margin)
-    axes[0].set_title("GP mean functions")
-    axes[0].legend()
+    axes[1].set_ylim(ymin - margin, ymax + margin)
+    axes[1].set_title("GP Mean Functions", fontsize=font_size_title)
+    axes[1].set_xlabel("Stimulus", fontsize = font_size_axis_label)
+    axes[1].set_ylabel("Response", fontsize = font_size_axis_label)
+    axes[1].legend()
 
     # Data points scatter
-    axes[0].scatter(x_data_points, y_data_points, c="black", edgecolor="white", zorder=3, s=30)
+    axes[1].scatter(x_data_points, y_data_points, c="black", edgecolor="white", zorder=3, s=30)
 
     # Generate plot 2: MSE value between each trial and the final trial
     mse_values = []
@@ -519,15 +543,14 @@ def plot_convergence(gp_regressor: GaussianProcessRegressor,
         mse_values.append(mse)
 
     trials = np.arange(1, len(mse_values) + 1) 
-    axes[1].plot(trials, mse_values, marker='o', linewidth=2)
-    axes[1].xaxis.set_major_locator(MultipleLocator(1))
-    axes[1].set_xlim(0.5, len(mse_values)+0.5)
-    axes[1].set_xlabel("Trial")
-    axes[1].set_ylabel("MSE")
-    axes[1].set_title("MSE values between predicted function values")
-    axes[1].grid(True, alpha=0.3)
+    axes[0].plot(trials, mse_values, marker='o', linewidth=2)
+    axes[0].xaxis.set_major_locator(MultipleLocator(1))
+    axes[0].set_xlim(0.5, len(mse_values)+0.5)
+    axes[0].set_xlabel("Trial", fontsize=font_size_axis_label)
+    axes[0].set_ylabel("MSE", fontsize=font_size_axis_label)
+    axes[0].set_title("Distance to the Final Function", fontsize=font_size_title)
+    axes[0].grid(True, alpha=0.3)
 
     figure.tight_layout()
-    figure.suptitle("Convergence Plot", fontsize=16)
 
     return figure, axes, mse_values
