@@ -1,6 +1,6 @@
 [project]
 name = "GPALexp"
-version = "0.1.10"
+version = "0.1.10.1"
 authors = [
     {name="Junyup Kim", email="ytrewq271828@kaist.ac.kr"},
     {name="Chaeho Lee", email="chaeholee@kaist.ac.kr"},
