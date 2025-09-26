@@ -536,15 +536,16 @@ def plot_convergence(gp_regressor: GaussianProcessRegressor,
 
     # Generate plot 2: MSE value between each trial and the final trial
     mse_values = []
-    print(num_data_points)
-    print(len(gp_mean_function_list))
+    #print(num_data_points)
+    #print(len(gp_mean_function_list))
     for i in range(num_data_points):
         mse = mean_squared_error(gp_mean_function_list[i], gp_mean_function_list[-1])
         mse_values.append(mse)
 
     trials = np.arange(1, len(mse_values) + 1) 
     axes[0].plot(trials, mse_values, marker='o', linewidth=2)
-    axes[0].xaxis.set_major_locator(MultipleLocator(1))
+    if mode=='sum':
+    	axes[0].xaxis.set_major_locator(MultipleLocator(1))
     axes[0].set_xlim(0.5, len(mse_values)+0.5)
     axes[0].set_xlabel("Trial", fontsize=font_size_axis_label)
     axes[0].set_ylabel("MSE", fontsize=font_size_axis_label)
