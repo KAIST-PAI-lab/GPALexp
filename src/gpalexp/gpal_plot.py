@@ -317,7 +317,7 @@ def plot_selection_frequency(
         raise ValueError(f"mode should be either 'sum' or 'average', got {mode}.")
 
     if column_names_specified is not None:
-        print(f"The columns included in dataframe: {list(dataframe.columns)}.")
+        #print(f"The columns included in dataframe: {list(dataframe.columns)}.")
 
         target_data_points = dataframe[column_names_specified].to_numpy()
         
