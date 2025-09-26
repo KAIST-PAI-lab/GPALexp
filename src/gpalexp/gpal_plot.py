@@ -359,7 +359,7 @@ def plot_selection_frequency(
     target_data_points=target_data_points[mask_binary]
 
     hist, dv1_pos=np.histogram(target_data_points, bins=bins, range=val_range)
-    print(dv1_pos)
+    #print(dv1_pos)
     if mode=='average':
         hist=hist/len(target_data_points)    ## Determining the width of each bar in the figure.
 
