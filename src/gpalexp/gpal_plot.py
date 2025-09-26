@@ -381,7 +381,8 @@ def plot_selection_frequency(
         edgecolor='black',     
         linewidth=0.8          
     )
-    ax.yaxis.set_major_locator(MultipleLocator(1))
+    if mode=='sum':
+    	ax.yaxis.set_major_locator(MultipleLocator(1))
 
     ax.set_xlabel("Stimulus Range", fontsize = font_size_axis_label)
     if mode == "sum":
@@ -544,8 +545,7 @@ def plot_convergence(gp_regressor: GaussianProcessRegressor,
 
     trials = np.arange(1, len(mse_values) + 1) 
     axes[0].plot(trials, mse_values, marker='o', linewidth=2)
-    if mode=='sum':
-    	axes[0].xaxis.set_major_locator(MultipleLocator(1))
+    axes[0].xaxis.set_major_locator(MultipleLocator(1))
     axes[0].set_xlim(0.5, len(mse_values)+0.5)
     axes[0].set_xlabel("Trial", fontsize=font_size_axis_label)
     axes[0].set_ylabel("MSE", fontsize=font_size_axis_label)
